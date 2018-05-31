@@ -1,14 +1,11 @@
 package com.dongx.blog.controller;
 
-import com.dongx.blog.service.Demo2Service;
 import com.dongx.blog.vo.Msg;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.annotation.Resource;
 
 
 /**
@@ -22,9 +19,6 @@ import javax.annotation.Resource;
 @Controller
 @Slf4j
 public class HelloController {
-	
-	@Resource
-	private Demo2Service demo2Service;
 	
 	@RequestMapping("/login")
 	public String login() {
