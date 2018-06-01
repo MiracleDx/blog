@@ -7,7 +7,7 @@ import java.util.UUID;
  * GeneratorKeyUtil
  *
  * @author: dongx
- * Description: 随机主键生成器
+ * Description: 随机主键生成器工具类
  * Created in: 2018-05-21 20:19
  * Modified by:
  */
