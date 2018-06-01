@@ -4,6 +4,8 @@ import com.dongx.blog.dto.UserDTO;
 import com.dongx.blog.entity.User;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Map;
+
 public interface UserMapper {
     int deleteByPrimaryKey(String id);
 
@@ -18,4 +20,6 @@ public interface UserMapper {
     int updateByPrimaryKey(User record);
     
     UserDTO findByUsername(@Param("username") String username);
+    
+    int insertRoleWithUser(Map<String, Object> map);
 }

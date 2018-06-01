@@ -2,6 +2,10 @@ package com.dongx.blog.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -14,6 +18,7 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
+import java.security.AuthProvider;
 
 /**
  * WebSecurityConfig
@@ -32,11 +37,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private MyFilterSecurityInterceptor myFilterSecurityInterceptor;
 	
 	@Resource
-	DataSource dataSource;
+	private DataSource dataSource;
 	
 	@Resource
-	UserDetailsService userDetailsService;
-
+	private UserDetailsService userDetailsService;
+	
 	/**
 	 * 密码编码
 	 * @return
@@ -84,4 +89,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		//tokenRepository.setCreateTableOnStartup(true);
 		return tokenRepository;
 	}
+
+	@Bean
+	@Override
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
+	}
+
 }

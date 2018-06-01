@@ -28,7 +28,7 @@ public class WebLogAspectConfig {
 
 	ThreadLocal<Long> startTime = new ThreadLocal<>();
 
-	@Pointcut("execution(public * com.dongx.initialization.controller..*.*(..))")
+	@Pointcut("execution(public * com.dongx.blog.controller..*.*(..))")
 	public void webLog() {}
 	
 	@Before("webLog()")

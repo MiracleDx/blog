@@ -103,8 +103,16 @@
     <result column="password" jdbcType="VARCHAR" property="password" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <collection property="roles" ofType="com.dongx.blog.entity.Role">
-      <id column="id" jdbcType="INTEGER" property="id" />
-      <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+      <id column="r.id" jdbcType="INTEGER" property="id" />
+      <result column="r.role_name" jdbcType="VARCHAR" property="roleName" />
     </collection>
   </resultMap>
+  
+  <insert id="insertRoleWithUser" parameterType="map" useGeneratedKeys="true">
+    INSERT INTO 
+      blog_user_role
+      (user_id, role_id)
+    VALUES 
+     (#{userId, jdbcType=VARCHAR}, #{roleId, jdbcType=INTEGER})
+  </insert>
 </mapper>

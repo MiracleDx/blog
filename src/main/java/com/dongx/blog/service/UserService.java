@@ -1,5 +1,8 @@
 package com.dongx.blog.service;
 
+import com.dongx.blog.entity.User;
+import com.dongx.blog.sys.ServerResponse;
+
 /**
  * UserService
  *
@@ -9,4 +12,25 @@ package com.dongx.blog.service;
  * Modified by:
  */
 public interface UserService {
+
+	/**
+	 * 注册用户
+	 * @param user
+	 * @return
+	 */
+	ServerResponse save(User user);
+
+	/**
+	 * 更新用户
+	 * @param user
+	 * @return
+	 */
+	ServerResponse update(User user);
+
+	/**
+	 * 删除用户（假删除）
+	 * @param user
+	 * @return
+	 */
+	ServerResponse delete(User user);
 }

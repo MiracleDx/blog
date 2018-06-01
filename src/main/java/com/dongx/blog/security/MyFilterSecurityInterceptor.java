@@ -1,5 +1,6 @@
 package com.dongx.blog.security;
 
+import com.dongx.blog.config.WebLogAspectConfig;
 import org.springframework.security.access.SecurityMetadataSource;
 import org.springframework.security.access.intercept.AbstractSecurityInterceptor;
 import org.springframework.security.access.intercept.InterceptorStatusToken;
@@ -16,7 +17,7 @@ import java.io.IOException;
  * MyFilterSecurityInterceptor
  *
  * @author: dongx
- * Description:
+ * Description: 拦截器对用户url请求进行拦截
  * Created in: 2018-05-27 20:01
  * Modified by:
  */

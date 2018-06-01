@@ -15,7 +15,7 @@ import java.util.Iterator;
  * MyAccessDecisionManager
  *
  * @author: dongx
- * Description:
+ * Description: 判断用户是否拥有权限
  * Created in: 2018-05-27 19:55
  * Modified by:
  */

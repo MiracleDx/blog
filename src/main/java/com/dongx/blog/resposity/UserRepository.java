@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Created in: 2018-05-26 19:33
  * Modified by:
  */
-@CacheConfig(cacheNames = "demos")
+@CacheConfig(cacheNames = "users")
 public interface UserRepository extends JpaRepository<User, String> {
 	
 	User findUserByUsername(String username);

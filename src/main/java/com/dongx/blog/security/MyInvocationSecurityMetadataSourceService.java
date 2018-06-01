@@ -17,7 +17,7 @@ import java.util.*;
  * MyInvocationSecurityMetadataSourceService
  *
  * @author: dongx
- * Description:
+ * Description: 初始化获取用户访问url权限
  * Created in: 2018-05-27 20:06
  * Modified by:
  */
