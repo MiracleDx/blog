@@ -35,7 +35,7 @@ spring:
     properties:
           hibernate:
             format_sql: true
-    
+
   
   #数据库驱动配置信息 
   datasource:
@@ -81,14 +81,14 @@ debug: false
 #mybatis
 mybatis:
   #实体类位置
-  type-aliases-package: com.dongx.initialization.entity
+  type-aliases-package: com.dongx.blog.entity
   mapper-locations: classpath*:mapper/**.xml
-  base-package: com.dongx.initialization.mapper
+  base-package: com.dongx.blog.mapper
       
 #mapper
 mapper:
   #mapper.java位置
-  mappers: com.dongx.initialization.mapper
+  mappers: com.dongx.blog.mapper
   not-empty: false
   identity: MYSQL
     
@@ -98,6 +98,20 @@ pagehelper:
   reasonable: true
   supportMethodsArguments: true
   params: count=countsql
+  
+  
+# JWT
+jwt:
+  header: Authorization
+  secret: mySecret
+  expiration: 604800
+  tokenHead: "Bearer "
+  route:
+    authentication:
+      path: auth
+      refresh: refresh
+      register: "auth/register"
+
 
   
     

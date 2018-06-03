@@ -5,7 +5,6 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="user_id" jdbcType="VARCHAR" property="userId" />
     <result column="nickname" jdbcType="VARCHAR" property="nickname" />
-    <result column="role" jdbcType="VARCHAR" property="role" />
     <result column="mobile" jdbcType="INTEGER" property="mobile" />
     <result column="avatar" jdbcType="VARCHAR" property="avatar" />
     <result column="register_time" jdbcType="TIMESTAMP" property="registerTime" />
@@ -15,8 +14,8 @@
     <result column="login_ip" jdbcType="VARCHAR" property="loginIp" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, user_id, nickname, role, mobile, avatar, register_time, register_ip, update_time, 
-    login_time, login_ip
+    id, user_id, nickname, mobile, avatar, register_time, register_ip, update_time, login_time, 
+    login_ip
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -30,13 +29,13 @@
   </delete>
   <insert id="insert" parameterType="com.dongx.blog.entity.UserInfo">
     insert into blog_user_info (id, user_id, nickname, 
-      role, mobile, avatar, 
-      register_time, register_ip, update_time, 
-      login_time, login_ip)
+      mobile, avatar, register_time, 
+      register_ip, update_time, login_time, 
+      login_ip)
     values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, 
-      #{role,jdbcType=VARCHAR}, #{mobile,jdbcType=INTEGER}, #{avatar,jdbcType=VARCHAR}, 
-      #{registerTime,jdbcType=TIMESTAMP}, #{registerIp,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{loginTime,jdbcType=TIMESTAMP}, #{loginIp,jdbcType=VARCHAR})
+      #{mobile,jdbcType=INTEGER}, #{avatar,jdbcType=VARCHAR}, #{registerTime,jdbcType=TIMESTAMP}, 
+      #{registerIp,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{loginTime,jdbcType=TIMESTAMP}, 
+      #{loginIp,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.dongx.blog.entity.UserInfo">
     insert into blog_user_info
@@ -49,9 +48,6 @@
       </if>
       <if test="nickname != null">
         nickname,
-      </if>
-      <if test="role != null">
-        role,
       </if>
       <if test="mobile != null">
         mobile,
@@ -85,9 +81,6 @@
       <if test="nickname != null">
         #{nickname,jdbcType=VARCHAR},
       </if>
-      <if test="role != null">
-        #{role,jdbcType=VARCHAR},
-      </if>
       <if test="mobile != null">
         #{mobile,jdbcType=INTEGER},
       </if>
@@ -120,9 +113,6 @@
       <if test="nickname != null">
         nickname = #{nickname,jdbcType=VARCHAR},
       </if>
-      <if test="role != null">
-        role = #{role,jdbcType=VARCHAR},
-      </if>
       <if test="mobile != null">
         mobile = #{mobile,jdbcType=INTEGER},
       </if>
@@ -151,7 +141,6 @@
     update blog_user_info
     set user_id = #{userId,jdbcType=VARCHAR},
       nickname = #{nickname,jdbcType=VARCHAR},
-      role = #{role,jdbcType=VARCHAR},
       mobile = #{mobile,jdbcType=INTEGER},
       avatar = #{avatar,jdbcType=VARCHAR},
       register_time = #{registerTime,jdbcType=TIMESTAMP},

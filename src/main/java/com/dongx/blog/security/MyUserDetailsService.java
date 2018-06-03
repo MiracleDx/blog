@@ -1,19 +1,17 @@
 package com.dongx.blog.security;
 
 import com.dongx.blog.common.UserStatusEnum;
-import com.dongx.blog.dto.UserDTO;
 import com.dongx.blog.entity.Permission;
+import com.dongx.blog.entity.User;
 import com.dongx.blog.mapper.PermissionMapper;
 import com.dongx.blog.mapper.UserMapper;
-import com.dongx.blog.utils.EncoderUtil;
+import com.dongx.blog.resposity.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -37,12 +35,15 @@ public class MyUserDetailsService implements UserDetailsService {
 	private UserMapper userMapper;
 	
 	@Resource
+	private UserRepository userRepository;
+	
+	@Resource
 	private PermissionMapper permissionMapper;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// 通过用户名查询用户
-		UserDTO user = userMapper.findByUsername(username);
+		User user = userRepository.findUserByUsername(username);
 		
 		// 查询用户的url权限
 		List<Permission> permissionList = permissionMapper.findByUserid(user.getId());
@@ -65,11 +66,9 @@ public class MyUserDetailsService implements UserDetailsService {
 		boolean isAccountNonExpired = this.isAccountNonExpired();
 		boolean isAccountNonLocked = this.isAccountNonLocked();
 		boolean isCredentialsNonExpired = this.isCredentialsNonExpired();
-		
-		return new org.springframework.security.core.userdetails.User
-				(user.getUsername(), user.getPassword(), 
-				isEnabled, isAccountNonExpired, isAccountNonLocked, isCredentialsNonExpired,
-				grantedAuthorities);
+
+		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
+				isEnabled, isAccountNonExpired, isAccountNonLocked, isCredentialsNonExpired, grantedAuthorities);
 	}
 
 	/**

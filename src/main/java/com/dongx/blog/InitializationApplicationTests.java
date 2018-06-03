@@ -16,10 +16,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @MapperScan("com.dongx.blog.mapper")
 @Slf4j
 @EnableCaching
-public class InitializationApplication {
+public class InitializationApplicationTests {
 
 	public static void main(String[] args) {
-		SpringApplication.run(InitializationApplication.class, args);
+		SpringApplication.run(InitializationApplicationTests.class, args);
 		log.info("\n\t==================>project start success<==================");
 	}
 }

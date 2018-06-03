@@ -1,11 +1,16 @@
 package com.dongx.blog.controller;
 
+import com.dongx.blog.resposity.UserRepository;
 import com.dongx.blog.vo.Msg;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.annotation.Resource;
 
 
 /**
@@ -19,10 +24,25 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @Slf4j
 public class HelloController {
+
+	@Resource
+	private AuthenticationManager authenticationManager;
 	
+	@Resource
+	private UserDetailsService userDetailsService;
+	
+	@Resource
+	private UserRepository userRepository;
+
 	@RequestMapping("/login")
 	public String login() {
 		return "login";
+	}
+	
+
+	@RequestMapping("/register")
+	public String register() {
+		return "register";
 	}
 
 	@RequestMapping("/")
@@ -37,4 +57,5 @@ public class HelloController {
 	public String hello(){
 		return "hello admin";
 	}
+
 }

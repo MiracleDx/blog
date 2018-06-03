@@ -1,16 +1,20 @@
 package com.dongx.blog.entity;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
+@Entity
+@Table(name = "blog_user_info")
 public class UserInfo implements Serializable {
+    
+    @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
     private String userId;
 
     private String nickname;
-
-    private String role;
 
     private Integer mobile;
 
@@ -50,14 +54,6 @@ public class UserInfo implements Serializable {
 
     public void setNickname(String nickname) {
         this.nickname = nickname == null ? null : nickname.trim();
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role == null ? null : role.trim();
     }
 
     public Integer getMobile() {

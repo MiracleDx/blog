@@ -1,6 +1,5 @@
-package com.dongx.initialization.utils;
+package com.dongx.blog.utils;
 
-import com.dongx.blog.utils.GeneratorKeyUtil;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

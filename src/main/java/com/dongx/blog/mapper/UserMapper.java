@@ -1,6 +1,6 @@
 package com.dongx.blog.mapper;
 
-import com.dongx.blog.dto.UserDTO;
+import com.dongx.blog.dto.UserRoleDTO;
 import com.dongx.blog.entity.User;
 import org.springframework.data.repository.query.Param;
 
@@ -19,7 +19,7 @@ public interface UserMapper {
 
     int updateByPrimaryKey(User record);
     
-    UserDTO findByUsername(@Param("username") String username);
+    UserRoleDTO findByUsername(@Param("username") String username);
     
     int insertRoleWithUser(Map<String, Object> map);
 }

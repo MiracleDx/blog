@@ -66,7 +66,6 @@ public class GlobalExceptionHandler {
 		sr.setMessage(e.getMessage());
 		sr.setCode(ResponseCode.ERROR.getCode());
 		sr.setData("error");
-		sr.setUrl(request.getRequestURL().toString());
 		return sr;
 	}
 

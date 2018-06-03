@@ -3,9 +3,6 @@ package com.dongx.blog.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -18,7 +15,6 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
-import java.security.AuthProvider;
 
 /**
  * WebSecurityConfig
@@ -41,7 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Resource
 	private UserDetailsService userDetailsService;
-	
+
 	/**
 	 * 密码编码
 	 * @return
@@ -62,7 +58,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				// 用户登录时跳转的页面
 				.formLogin()
 					.loginPage("/login")
-					.defaultSuccessUrl("/")
 					.failureUrl("/login?error")
 					.permitAll()
 					.and()
@@ -95,5 +90,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		return super.authenticationManagerBean();
 	}
-
 }

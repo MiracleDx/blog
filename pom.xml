@@ -26,8 +26,8 @@
 		<!-- MyBatis Generator -->
 		<!-- Java接口和实体类 -->
 		<!--<targetJavaProject>${basedir}/src/main/java</targetJavaProject>
-		<targetMapperPackage>com.dongx.initialization.mapper</targetMapperPackage>
-		<targetModelPackage>com.dongx.initialization.entity</targetModelPackage>-->
+		<targetMapperPackage>com.dongx.blog.mapper</targetMapperPackage>
+		<targetModelPackage>com.dongx.blogargetModelPackage>-->
 		<!-- XML生成路径 -->
 		<!--<targetResourcesProject>${basedir}/src/main/resources</targetResourcesProject>
 		<targetXMLPackage>mapper</targetXMLPackage>-->
@@ -82,7 +82,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
-
 
 		<!--引入sqlserver驱动-->
 <!--
@@ -205,7 +204,14 @@
 			<version>3.7</version>
 		</dependency>
 
+		<!-- 引入jwt-->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.9.0</version>
+		</dependency>
 
+		
 	</dependencies>
 
 	<build>

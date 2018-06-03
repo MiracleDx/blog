@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * UserDTO
+ * UserRoleDTO
  *
  * @author: dongx
  * Description:
@@ -14,7 +14,7 @@ import java.util.List;
  * Modified by:
  */
 @Data
-public class UserDTO {
+public class UserRoleDTO {
 
 	private String id;
 

@@ -18,29 +18,27 @@ public class ServerResponse<T> {
 	
 	private String message;
 	
-	private String url;
-	
 	private T data;
 	
 	public ServerResponse() {
 		
 	}
 	
-	private ServerResponse(Integer Code)  {
+	private ServerResponse(Integer code)  {
 		this.code = code;
 	}
 	
-	private ServerResponse(Integer Code, String message) {
+	private ServerResponse(Integer code, String message) {
 		this.code = code;
 		this.message = message;
 	}
 	
-	private ServerResponse(Integer Code, T data) {
+	private ServerResponse(Integer code, T data) {
 		this.code = code;
 		this.data = data;
 	}
 	
-	private ServerResponse(Integer Code, String message, T data) {
+	private ServerResponse(Integer code, String message, T data) {
 		this.code = code;
 		this.message = message;
 		this.data = data;

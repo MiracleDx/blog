@@ -1,21 +1,29 @@
-package com.dongx.blog.service.Impl;
+package com.dongx.blog.service.impl;
 
 import com.dongx.blog.common.RoleName;
 import com.dongx.blog.common.UserStatusEnum;
+import com.dongx.blog.dto.UserInfoDTO;
 import com.dongx.blog.entity.Role;
 import com.dongx.blog.entity.User;
+import com.dongx.blog.entity.UserInfo;
 import com.dongx.blog.mapper.UserMapper;
 import com.dongx.blog.resposity.RoleRepostiory;
+import com.dongx.blog.resposity.UserInfoRepository;
 import com.dongx.blog.resposity.UserRepository;
 import com.dongx.blog.service.UserService;
 import com.dongx.blog.sys.ServerResponse;
 import com.dongx.blog.utils.EncoderUtil;
 import com.dongx.blog.utils.GeneratorKeyUtil;
+import com.dongx.blog.utils.IpUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
+import java.time.Instant;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,10 +47,13 @@ public class UserSerivceImpl implements UserService {
 	
 	@Resource
 	private RoleRepostiory roleRepostiory;
+	
+	@Resource
+	private UserInfoRepository userInfoRepository;
 
 	@Override
 	@Transactional
-	public ServerResponse save(User user) {
+	public ServerResponse save(User user, HttpServletRequest request) {
 		
 		if (user == null) {
 			return null;
@@ -77,14 +88,44 @@ public class UserSerivceImpl implements UserService {
 		map.put("roleId", role.getId());
 		userMapper.insertRoleWithUser(map);
 		
+		// 存入用户角色信息
+		UserInfo userInfo = new UserInfo();
+		Date now = Date.from(Instant.now());
+		String ip = IpUtil.getIpAddr(request);
+		userInfo.setUserId(userId);
+		userInfo.setLoginIp(ip);
+		userInfo.setLoginTime(now);
+		userInfo.setRegisterTime(now);
+		userInfo.setRegisterIp(ip);
+		userInfo.setRegisterTime(now);
+		userInfo.setUpdateTime(now);
+		userInfoRepository.save(userInfo);
+		
 		log.info("注册成功， 创建用户：{}", username);
 		return ServerResponse.createBySuccess("注册成功");
 	}
 
 	@Override
 	@Transactional
-	public ServerResponse update(User user) {
-		return null;
+	public ServerResponse update(User user, UserInfoDTO userInfoDTO) {
+		
+		if (user == null) {
+			return null;
+		}
+		
+		UserInfo userInfo = new UserInfo();
+		BeanUtils.copyProperties(userInfoDTO, userInfo);
+		userInfo.setUserId(user.getId());
+		
+		UserInfo result = userInfoRepository.save(userInfo);
+				
+		if (result != null) {
+			log.info("更新用户信息成功:{}", userInfo.toString());
+			ServerResponse.createBySuccess(result);
+		}
+		
+		log.info("更新用户信息失败:{}", user.getUsername());
+		return ServerResponse.createbyError("更新用户信息失败");
 	}
 
 	@Override

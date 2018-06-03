@@ -1,4 +1,4 @@
-package com.dongx.initialization;
+package com.dongx.blog;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

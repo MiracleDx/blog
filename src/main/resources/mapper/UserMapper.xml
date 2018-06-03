@@ -97,7 +97,7 @@
     WHERE
       u.username = #{username, jdbcType=VARCHAR}
   </select>
-  <resultMap id="UserRes" type="com.dongx.blog.dto.UserDTO">
+  <resultMap id="UserRes" type="com.dongx.blog.dto.UserRoleDTO">
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="password" jdbcType="VARCHAR" property="password" />

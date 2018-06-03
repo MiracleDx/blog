@@ -1,7 +1,5 @@
-package com.dongx.initialization.resposity;
+package com.dongx.blog.mapper;
 
-import com.dongx.blog.entity.User;
-import com.dongx.blog.resposity.UserRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,23 +8,26 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.annotation.Resource;
 
 /**
- * UserRepositoryTest
+ * UserMapperTest
  *
  * @author: dongx
  * Description:
- * Created in: 2018-05-27 14:10
+ * Created in: 2018-05-27 18:27
  * Modified by:
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class UserRepositoryTest {
-
-	@Resource
-	UserRepository userRespository;
+public class UserMapperTest {
 	
+	@Resource
+	private UserMapper userMapper;
+
 	@Test
 	public void findUserByUsername() {
-		User user  = userRespository.findUserByUsername("admin");
-		System.out.println(user.toString());
+	}
+	
+	@Test
+	public void selectByPrimaryKey () {
+		userMapper.selectByPrimaryKey("123213");
 	}
 }

@@ -1,12 +1,10 @@
 package com.dongx.blog.security;
 
-import ch.qos.logback.classic.Logger;
 import com.dongx.blog.entity.User;
 import com.dongx.blog.resposity.UserRepository;
 import com.dongx.blog.utils.EncoderUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,7 +29,7 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
 	
 	@Resource
 	private UserRepository userRepository;
-	
+
 	@Resource
 	private UserDetailsService userDetailsService;
 	
@@ -46,7 +44,7 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
 			log.info("Username {} not found.", username);
 			throw new BadCredentialsException("Username not found.");
 		} else {
-			String dbPassword =user.getPassword();
+			String dbPassword = user.getPassword();
 			
 			// 用户密码和数据库密码进行比较
 			if (EncoderUtil.matches(password, dbPassword)) {
@@ -54,6 +52,7 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
 				
 				UsernamePasswordAuthenticationToken result = new UsernamePasswordAuthenticationToken
 										(userDetails, authentication.getCredentials(),userDetails.getAuthorities());
+
 				return result;
 			} else {
 				log.info("{}: Wrong password.", username);

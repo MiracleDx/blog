@@ -1,7 +1,6 @@
-package com.dongx.initialization.mapper;
+package com.dongx.blog.mapper;
 
 import com.dongx.blog.entity.Permission;
-import com.dongx.blog.mapper.PermissionMapper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

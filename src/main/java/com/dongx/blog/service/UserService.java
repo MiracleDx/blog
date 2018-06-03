@@ -1,7 +1,10 @@
 package com.dongx.blog.service;
 
+import com.dongx.blog.dto.UserInfoDTO;
 import com.dongx.blog.entity.User;
 import com.dongx.blog.sys.ServerResponse;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * UserService
@@ -18,14 +21,14 @@ public interface UserService {
 	 * @param user
 	 * @return
 	 */
-	ServerResponse save(User user);
+	ServerResponse save(User user, HttpServletRequest request);
 
 	/**
 	 * 更新用户
 	 * @param user
 	 * @return
 	 */
-	ServerResponse update(User user);
+	ServerResponse update(User user, UserInfoDTO userInfoDTO);
 
 	/**
 	 * 删除用户（假删除）
