@@ -14,6 +14,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 @CacheConfig(cacheNames = "users")
 public interface UserRepository extends JpaRepository<User, String> {
-	
+
+	/**
+	 * 通过用户名查找用户
+	 * @param username
+	 * @return
+	 */
 	User findUserByUsername(String username);
 }

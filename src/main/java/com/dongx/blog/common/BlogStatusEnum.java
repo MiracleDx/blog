@@ -6,14 +6,14 @@ import lombok.Getter;
  * BlogStatusEnum
  *
  * @author: dongx
- * Description:
+ * Description: 博客状态枚举类
  * Created in: 2018-06-03 17:48
  * Modified by:
  */
 @Getter
 public enum BlogStatusEnum {
 	
-	ACTICE(0001, "ACTIVE"),
+	ACTIVE(0001, "ACTIVE"),
 	UNACTIVE(0002, "UNACTIVE"),
 	// 草稿
 	DRAFT(0003, "DRAFT");

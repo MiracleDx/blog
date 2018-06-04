@@ -1,8 +1,14 @@
 package com.dongx.blog.entity;
 
+import javax.persistence.*;
 import java.io.Serializable;
 
+@Entity
+@Table(name = "blog_category")
 public class Category implements Serializable {
+    
+    @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
     private Integer cartegorycode;

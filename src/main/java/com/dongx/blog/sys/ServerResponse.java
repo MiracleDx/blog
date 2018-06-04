@@ -60,15 +60,15 @@ public class ServerResponse<T> {
 		return new ServerResponse<>(ResponseCode.SUCCESS.getCode(), message, data);
 	}
 
-	public static <T> ServerResponse<T> createbyError() {
+	public static <T> ServerResponse<T> createByError() {
 		return new ServerResponse<>(ResponseCode.ERROR.getCode());
 	}
 
-	public static <T> ServerResponse<T> createbyError(String message) {
+	public static <T> ServerResponse<T> createByError(String message) {
 		return new ServerResponse<>(ResponseCode.ERROR.getCode(), message);
 	}
 
-	public static <T> ServerResponse<T> createbyError(String message, T data) {
+	public static <T> ServerResponse<T> createByError(String message, T data) {
 		return new ServerResponse<>(ResponseCode.ERROR.getCode(), message, data);
 	}
 }

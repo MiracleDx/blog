@@ -1,6 +1,7 @@
 package com.dongx.blog.mapper;
 
 import com.dongx.blog.dto.UserRoleDTO;
+import com.dongx.blog.entity.Role;
 import com.dongx.blog.entity.User;
 import org.springframework.data.repository.query.Param;
 
@@ -21,5 +22,5 @@ public interface UserMapper {
     
     UserRoleDTO findByUsername(@Param("username") String username);
     
-    int insertRoleWithUser(Map<String, Object> map);
+    Role insertRoleWithUser(Map<String, Object> map);
 }

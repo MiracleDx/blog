@@ -1,7 +1,7 @@
 package com.dongx.blog.service.impl;
 
+import com.dongx.blog.common.CommonStatus;
 import com.dongx.blog.common.RoleName;
-import com.dongx.blog.common.UserStatusEnum;
 import com.dongx.blog.dto.UserInfoDTO;
 import com.dongx.blog.entity.Role;
 import com.dongx.blog.entity.User;
@@ -65,7 +65,7 @@ public class UserSerivceImpl implements UserService {
 		User oldUser = userRepository.findUserByUsername(username);
 		if (oldUser != null) {
 			log.info("注册失败， 用户名已存在：{}", username);
-			return ServerResponse.createbyError("该用户名已存在");
+			return ServerResponse.createByError("该用户名已存在");
 		} 
 		
 		// 对密码进行加密处理
@@ -78,15 +78,15 @@ public class UserSerivceImpl implements UserService {
 		// 存入用户
 		user.setId(userId);
 		user.setPassword(newPassword);
-		user.setStatus(UserStatusEnum.ACTIVE.getCode());
-		userRepository.save(user);
+		user.setStatus(CommonStatus.ACTIVE.getCode());
+		User userResult = userRepository.save(user);
 		
 		// 存入用户角色
 		Role role = roleRepostiory.findByRoleName(RoleName.ROLE_USER);
 		Map<String, Object> map = new HashMap<>();
 		map.put("userId", userId);
 		map.put("roleId", role.getId());
-		userMapper.insertRoleWithUser(map);
+		Role roleResult = userMapper.insertRoleWithUser(map);
 		
 		// 存入用户角色信息
 		UserInfo userInfo = new UserInfo();
@@ -99,7 +99,11 @@ public class UserSerivceImpl implements UserService {
 		userInfo.setRegisterIp(ip);
 		userInfo.setRegisterTime(now);
 		userInfo.setUpdateTime(now);
-		userInfoRepository.save(userInfo);
+		UserInfo userInfoResult = userInfoRepository.save(userInfo);
+		
+		if (userResult == null || roleResult == null || userInfoResult == null) {
+			ServerResponse.createByError("创建用户失败：{}", username);
+		}
 		
 		log.info("注册成功， 创建用户：{}", username);
 		return ServerResponse.createBySuccess("注册成功");
@@ -125,7 +129,7 @@ public class UserSerivceImpl implements UserService {
 		}
 		
 		log.info("更新用户信息失败:{}", user.getUsername());
-		return ServerResponse.createbyError("更新用户信息失败");
+		return ServerResponse.createByError("更新用户信息失败");
 	}
 
 	@Override
@@ -136,15 +140,15 @@ public class UserSerivceImpl implements UserService {
 			return null;
 		}
 		
-		user.setStatus(UserStatusEnum.UNACTVE.getCode());
-		User unAcyiveUser = userRepository.save(user);
+		user.setStatus(CommonStatus.UNACTIVE.getCode());
+		User unActiveUser = userRepository.save(user);
 		
-		if (unAcyiveUser != null) {
+		if (unActiveUser != null) {
 			log.info("用户删除成功， 删除用户：{}", user.getUsername());
 			return ServerResponse.createBySuccess("用户删除成功");
 		}
 		
 		log.info("用户删除失败， 删除用户：{}", user.getUsername());
-		return ServerResponse.createbyError("用户删除失败");
+		return ServerResponse.createByError("用户删除失败");
 	}
 }

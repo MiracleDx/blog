@@ -1,6 +1,6 @@
 package com.dongx.blog.service.impl;
 
-import com.dongx.blog.common.BlogStatusEnum;
+import com.dongx.blog.common.CommonStatus;
 import com.dongx.blog.dto.BlogDTO;
 import com.dongx.blog.entity.Blog;
 import com.dongx.blog.resposity.BlogRepository;
@@ -42,11 +42,11 @@ public class BlogServiceImpl implements BlogService {
 			blogDTO.setContent(this.readFile(blog.getAddress()));
 			return ServerResponse.createBySuccess(blogDTO);
 		}
-		return ServerResponse.createbyError("该博客不存在");
+		return ServerResponse.createByError("该博客不存在");
 	}
 	
 	public ServerResponse findAll() {
-		return ServerResponse.createBySuccess(blogRepository.findAllByStatus(BlogStatusEnum.ACTICE.getCode()));
+		return ServerResponse.createBySuccess(blogRepository.findAllByStatus(CommonStatus.ACTIVE.getCode()));
 	}
 	
 	public ServerResponse findByCategory(String category) {
@@ -80,7 +80,7 @@ public class BlogServiceImpl implements BlogService {
 				return ServerResponse.createBySuccess("更新成功", vo);
 			}
 		}
-		return ServerResponse.createbyError("更新失败");
+		return ServerResponse.createByError("更新失败");
 	}
 	
 	public ServerResponse save(BlogDTO blogDTO) {
@@ -102,7 +102,7 @@ public class BlogServiceImpl implements BlogService {
 			blog.setAddress(address);
 			blog.setCrreateTime(now);
 			blog.setUpdateTime(now);
-			blog.setStatus(BlogStatusEnum.ACTICE.getCode());
+			blog.setStatus(CommonStatus.ACTIVE.getCode());
 			Blog result = blogRepository.save(blog);
 			if (result != null) {
 				BlogVo vo = new BlogVo();
@@ -112,17 +112,17 @@ public class BlogServiceImpl implements BlogService {
 				return ServerResponse.createBySuccess("保存成功", blogDTO);
 			}
 		}
-		return ServerResponse.createbyError("保存失败");
+		return ServerResponse.createByError("保存失败");
 	}
 
 	public ServerResponse delete(BlogDTO blogDTO) {
 		Blog blog = blogRepository.getOne(blogDTO.getId());
-		blog.setStatus(BlogStatusEnum.UNACTIVE.getCode());
+		blog.setStatus(CommonStatus.UNACTIVE.getCode());
 		Blog result = blogRepository.save(blog);
 		if (result != null) {
 			return ServerResponse.createBySuccess("删除成功");
 		}
-		return ServerResponse.createbyError("删除失败");
+		return ServerResponse.createByError("删除失败");
 	}
 	
 

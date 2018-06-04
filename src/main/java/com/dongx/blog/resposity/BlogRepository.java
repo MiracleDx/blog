@@ -14,8 +14,18 @@ import java.util.List;
  * Modified by:
  */
 public interface BlogRepository extends JpaRepository<Blog, String> {
-	
-	List<Blog> findByCategory(String category); 
-	
+
+	/**
+	 * 通过类别查找博客
+	 * @param category
+	 * @return
+	 */
+	List<Blog> findByCategory(String category);
+
+	/**
+	 * 查询所有博客
+	 * @param status
+	 * @return
+	 */
 	List<Blog> findAllByStatus(Integer status);
 }
