@@ -7,7 +7,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -57,7 +56,7 @@ public class JwtTokenUtil {
 		return Jwts.builder()
 				.setExpiration(new Date(System.currentTimeMillis() + VALIDITY_TIME_MS))
 				.setSubject(jwtUser.getUsername())
-				.claim("id", jwtUser.getId())
+				.setId(jwtUser.getId())
 				.claim("roles", jwtUser.getRoles())
 				.signWith(SignatureAlgorithm.HS512, SECRET)
 				.compact();
