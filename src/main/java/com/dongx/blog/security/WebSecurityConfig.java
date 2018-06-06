@@ -1,93 +1,93 @@
 package com.dongx.blog.security;
 
+import com.dongx.blog.utils.JwtTokenUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.context.NullSecurityContextRepository;
 
 import javax.annotation.Resource;
-import javax.sql.DataSource;
 
 /**
  * WebSecurityConfig
  *
  * @author: dongx
- * Description: spring-security配置
- * Created in: 2018-05-18 18:29
+ * Description:
+ * Created in: 2018-06-05 11:13
  * Modified by:
  */
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
 
 	@Resource
 	private MyFilterSecurityInterceptor myFilterSecurityInterceptor;
-	
-	@Resource
-	private DataSource dataSource;
-	
+
 	@Resource
 	private UserDetailsService userDetailsService;
+	
+	@Resource
+	private JwtTokenUtil jwtTokenUtil;
+
+	@Resource
+	public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+		authenticationManagerBuilder
+				// 设置UserDetailsService
+				.userDetailsService(this.userDetailsService)
+				// 使用BCrypt进行密码的hash
+				.passwordEncoder(passwordEncoder());
+	}
 
 	/**
-	 * 密码编码
-	 * @return
+	 * 装载BCrypt密码编码器
 	 */
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
+	
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
-				//匹配的url登录后可以访问
+				// 由于使用的是JWT，我们这里不需要csrf
+				.csrf().disable()
+				// 基于token，所以不需要session
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 				.authorizeRequests()
-					.antMatchers("/css/**").permitAll()
-					.anyRequest().authenticated() 
-					.and()
-				// 用户登录时跳转的页面
-				.formLogin()
-					.loginPage("/login")
-					.failureUrl("/login?error")
-					.permitAll()
-					.and()
-				.rememberMe()
-					.tokenRepository(persistentTokenRepository())
-					.tokenValiditySeconds(3600)
-					.userDetailsService(userDetailsService)
-					.and()
-				.logout()
-					.permitAll()
-					.and()
-		;
+				//.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+				// 允许对于网站静态资源的无授权访问
+				.antMatchers(
+						HttpMethod.GET,
+						"/",
+						"/*.html",
+						"/favicon.ico",
+						"/**/*.html",
+						"/**/*.css",
+						"/**/*.js"
+				).permitAll()
+				// 对于获取token的restapi要允许匿名访问
+				.antMatchers("/authlogin").permitAll()
+				// 除上面外的所有请求全部需要鉴权认证
+				.anyRequest().authenticated();
+
+		http.addFilterBefore(new JwtAuthenticationTokenFilter(jwtTokenUtil),
+				UsernamePasswordAuthenticationFilter.class);
+		// 禁用缓存
+		http.headers().cacheControl();
 		http.addFilterBefore(myFilterSecurityInterceptor, FilterSecurityInterceptor.class);
-	}
-
-	/**
-	 * 配置记住我
-	 * @return
-	 */
-	@Bean
-	public PersistentTokenRepository persistentTokenRepository() {
-		JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
-		tokenRepository.setDataSource(dataSource);
-		//tokenRepository.setCreateTableOnStartup(true);
-		return tokenRepository;
-	}
-
-	@Bean
-	@Override
-	public AuthenticationManager authenticationManagerBean() throws Exception {
-		return super.authenticationManagerBean();
 	}
 }

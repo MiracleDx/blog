@@ -21,7 +21,7 @@ import java.util.Iterator;
  */
 @Service
 public class MyAccessDecisionManager implements AccessDecisionManager {
-	
+
 	/**
 	 * 判定是否拥有权限的决策方法
 	 * @param authentication 从CustomUserService中循环添加到 GrantedAuthority 对象中的权限信息集合
@@ -32,7 +32,7 @@ public class MyAccessDecisionManager implements AccessDecisionManager {
 	 */
 	@Override
 	public void decide(Authentication authentication, Object object, Collection<ConfigAttribute> configAttributes) throws AccessDeniedException, InsufficientAuthenticationException {
-		
+
 		if (configAttributes == null || configAttributes.size() == 0) {
 			return;
 		}

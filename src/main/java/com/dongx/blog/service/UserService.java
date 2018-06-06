@@ -36,4 +36,12 @@ public interface UserService {
 	 * @return
 	 */
 	ServerResponse delete(User user);
+
+	/**
+	 * 用户登录
+	 * @param username
+	 * @param password
+	 * @return
+	 */
+	ServerResponse login(String username, String password);
 }

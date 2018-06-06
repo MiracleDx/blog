@@ -103,15 +103,14 @@ pagehelper:
 # JWT
 jwt:
   header: Authorization
-  secret: mySecret
+  secret: fullinlovewithyangxl
   expiration: 604800
-  tokenHead: "Bearer "
+  tokenHead: "yangxl "
   route:
     authentication:
       path: auth
       refresh: refresh
       register: "auth/register"
-
 
   
     

@@ -23,7 +23,7 @@ import java.util.*;
  */
 @Service
 public class MyInvocationSecurityMetadataSourceService implements FilterInvocationSecurityMetadataSource {
-	
+
 	@Resource
 	private PermissionMapper permissionMapper;
 
