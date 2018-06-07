@@ -32,6 +32,7 @@ public class BlogServiceImpl implements BlogService {
 	@Resource
 	private BlogRepository blogRepository;
 
+	@Override
 	public ServerResponse findOne(String blogId) {
 		
 		Blog blog = blogRepository.getOne(blogId);
@@ -44,15 +45,18 @@ public class BlogServiceImpl implements BlogService {
 		}
 		return ServerResponse.createByError("该博客不存在");
 	}
-	
+
+	@Override
 	public ServerResponse findAll() {
 		return ServerResponse.createBySuccess(blogRepository.findAllByStatus(CommonStatus.ACTIVE.getCode()));
 	}
-	
+
+	@Override
 	public ServerResponse findByCategory(String category) {
 		return ServerResponse.createBySuccess(blogRepository.findByCategory(category));
 	}
-	
+
+	@Override
 	public ServerResponse update(BlogDTO blogDTO) {
 		
 		if (blogDTO == null) {
@@ -82,7 +86,8 @@ public class BlogServiceImpl implements BlogService {
 		}
 		return ServerResponse.createByError("更新失败");
 	}
-	
+
+	@Override
 	public ServerResponse save(BlogDTO blogDTO) {
 		
 		if (blogDTO == null) {
@@ -115,6 +120,7 @@ public class BlogServiceImpl implements BlogService {
 		return ServerResponse.createByError("保存失败");
 	}
 
+	@Override
 	public ServerResponse delete(BlogDTO blogDTO) {
 		Blog blog = blogRepository.getOne(blogDTO.getId());
 		blog.setStatus(CommonStatus.UNACTIVE.getCode());
