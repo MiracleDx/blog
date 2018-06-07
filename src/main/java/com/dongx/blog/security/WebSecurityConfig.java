@@ -84,10 +84,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				// 除上面外的所有请求全部需要鉴权认证
 				.anyRequest().authenticated();
 
+		// 过滤验签
 		http.addFilterBefore(new JwtAuthenticationTokenFilter(jwtTokenUtil),
 				UsernamePasswordAuthenticationFilter.class);
 		// 禁用缓存
 		http.headers().cacheControl();
+		// 验证权限信息
 		http.addFilterBefore(myFilterSecurityInterceptor, FilterSecurityInterceptor.class);
 	}
 }
