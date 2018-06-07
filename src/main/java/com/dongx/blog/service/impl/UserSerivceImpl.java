@@ -186,6 +186,6 @@ public class UserSerivceImpl implements UserService {
 				user, null, user.getAuthorities());
 		log.info("authenticated user " + username + ", setting security context");
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		return ServerResponse.createBySuccess(token);
+		return ServerResponse.createBySuccess("登录成功", token);
 	}
 }
