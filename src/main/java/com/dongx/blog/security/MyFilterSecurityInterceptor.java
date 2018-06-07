@@ -1,12 +1,10 @@
 package com.dongx.blog.security;
 
-import com.dongx.blog.utils.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.SecurityMetadataSource;
 import org.springframework.security.access.intercept.AbstractSecurityInterceptor;
 import org.springframework.security.access.intercept.InterceptorStatusToken;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.stereotype.Service;
@@ -33,12 +31,6 @@ public class MyFilterSecurityInterceptor extends AbstractSecurityInterceptor imp
 
 	@Value("${jwt.tokenHead}")
 	private String tokenHead;
-	
-	@Resource
-	private JwtTokenUtil jwtTokenUtil;
-	
-	@Resource
-	private UserDetailsService userDetailsService;
 	
 	@Resource
 	private FilterInvocationSecurityMetadataSource securityMetadataSource;
