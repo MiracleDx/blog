@@ -57,13 +57,7 @@ public class CommentServiceImpl implements CommentService {
 		if (StringUtils.isEmpty(blogId)) {
 			return null;	
 		}
-
-		List<Comment> result = commentRepository.findAllByBlogIdAndStatus(blogId, CommonStatus.ACTIVE.getCode());
-		if (result != null) {
-			return ServerResponse.createBySuccess(result);
-		}
-		
-		return ServerResponse.createByError();
+		return ServerResponse.createBySuccess(commentRepository.findAllByBlogIdAndStatus(blogId, CommonStatus.ACTIVE.getCode()));
 	}
 	
 	public ServerResponse deleteByCommentId(CommentDTO commentDTO) {
@@ -85,4 +79,13 @@ public class CommentServiceImpl implements CommentService {
 		log.info("评论删除失败: {}", comment.getId());
 		return ServerResponse.createByError("评论删除失败");
 	}
+	
+	public ServerResponse findByBlogIdAndCreateUser(String BlogId, String createuserId) {
+		return ServerResponse.createBySuccess(commentRepository.findAllByBlogIdAndCreateUserAndStatus(BlogId, createuserId, CommonStatus.ACTIVE.getCode()));
+	}
+	
+	public ServerResponse findByCreateUser(String createuserId) {
+		return ServerResponse.createBySuccess(commentRepository.findAllByCreateUserAndStatus(createuserId, CommonStatus.ACTIVE.getCode()));
+	}
+	
 }
