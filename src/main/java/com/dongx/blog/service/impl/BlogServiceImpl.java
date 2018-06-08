@@ -53,7 +53,7 @@ public class BlogServiceImpl implements BlogService {
 
 	@Override
 	public ServerResponse findByCategory(String category) {
-		return ServerResponse.createBySuccess(blogRepository.findByCategory(category));
+		return ServerResponse.createBySuccess(blogRepository.findByCategoryAndStatus(category, CommonStatus.ACTIVE.getCode()));
 	}
 
 	@Override
