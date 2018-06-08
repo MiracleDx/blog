@@ -22,4 +22,21 @@ public interface CommentRepository extends JpaRepository<Comment, String> {
 	 * @return
 	 */
 	List<Comment> findAllByBlogIdAndStatus(String blogId, Integer status);
+
+	/**
+	 * 通过博客id查找创建者在该博客下的所有评论
+	 * @param blogId
+	 * @param createuserId
+	 * @param status
+	 * @return
+	 */
+	List<Comment> findAllByBlogIdAndCreateUserAndStatus(String blogId, String createuserId, Integer status);
+
+	/**
+	 * 查找创建者的所有评论
+	 * @param createuserId
+	 * @param status
+	 * @return
+	 */
+	List<Comment> findAllByCreateUserAndStatus(String createuserId, Integer status);
 }
