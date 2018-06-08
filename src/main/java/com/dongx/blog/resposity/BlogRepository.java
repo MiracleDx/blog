@@ -20,7 +20,7 @@ public interface BlogRepository extends JpaRepository<Blog, String> {
 	 * @param category
 	 * @return
 	 */
-	List<Blog> findByCategory(String category);
+	List<Blog> findByCategoryAndStatus(String category, Integer status);
 
 	/**
 	 * 查询所有博客
