@@ -17,19 +17,21 @@ import com.dongx.blog.utils.EncoderUtil;
 import com.dongx.blog.utils.GeneratorKeyUtil;
 import com.dongx.blog.utils.IpUtil;
 import com.dongx.blog.utils.JwtTokenUtil;
+import com.dongx.blog.vo.UserVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
@@ -65,16 +67,12 @@ public class UserSerivceImpl implements UserService {
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
 	
-
-/*	@Resource
-	private AuthenticationManager authenticationManager;*/
-
 	@Override
 	@Transactional
 	public ServerResponse save(User user, HttpServletRequest request) {
 		
 		if (user == null) {
-			return null;
+			return ServerResponse.createByError("注册失败， 请联系管理员");
 		}
 		
 		String username = user.getUsername();
@@ -104,7 +102,7 @@ public class UserSerivceImpl implements UserService {
 		Map<String, Object> map = new HashMap<>();
 		map.put("userId", userId);
 		map.put("roleId", role.getId());
-		Role roleResult = userMapper.insertRoleWithUser(map);
+		int roleResult = userMapper.insertRoleWithUser(map);
 		
 		// 存入用户角色信息
 		UserInfo userInfo = new UserInfo();
@@ -119,7 +117,7 @@ public class UserSerivceImpl implements UserService {
 		userInfo.setUpdateTime(now);
 		UserInfo userInfoResult = userInfoRepository.save(userInfo);
 		
-		if (userResult == null || roleResult == null || userInfoResult == null) {
+		if (userResult == null || roleResult == 0 || userInfoResult == null) {
 			ServerResponse.createByError("创建用户失败：{}", username);
 		}
 		
@@ -173,7 +171,6 @@ public class UserSerivceImpl implements UserService {
 	@Override
 	public ServerResponse login(String username, String password) {
 
-
 		if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
 			throw new AuthenticationServiceException("Username or Password not provided");
 		}
@@ -187,5 +184,24 @@ public class UserSerivceImpl implements UserService {
 		log.info("authenticated user " + username + ", setting security context");
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		return ServerResponse.createBySuccess("登录成功", token);
+	}
+	
+	@Override
+	public ServerResponse getUserInfo() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		JwtUser user = (JwtUser) authentication.getDetails();
+		
+		UserInfo userInfo = userInfoRepository.findUserInfoByUserId(user.getId());
+		String defaultAvatar = "/static/images/avatars/user2.jpg";
+		
+		UserVo userVo = new UserVo();
+		BeanUtils.copyProperties(userInfo, userVo);
+		userVo.setId(user.getId());
+		userVo.setUsername(user.getUsername());
+		if (StringUtils.isEmpty(userVo.getAvatar())) {
+			userVo.setAvatar(defaultAvatar);
+		}
+		
+		return ServerResponse.createBySuccess(userVo);
 	}
 }

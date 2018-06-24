@@ -22,5 +22,5 @@ public interface UserMapper {
     
     UserRoleDTO findByUsername(@Param("username") String username);
     
-    Role insertRoleWithUser(Map<String, Object> map);
+    int insertRoleWithUser(Map<String, Object> map);
 }

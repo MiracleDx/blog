@@ -15,12 +15,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
 
@@ -32,7 +30,8 @@ import java.util.Objects;
  * Created in: 2018-05-13 9:40
  * Modified by:
  */
-@Controller
+@CrossOrigin
+@RestController
 @Slf4j
 public class HelloController {
 	
@@ -45,45 +44,23 @@ public class HelloController {
 	@Resource
 	private UserService userService;
 
-	@RequestMapping("/login")
-	public String login() {
-		return "login";
-	}
-	
-
-	@RequestMapping("/register")
-	public String register() {
-		return "register";
-	}
-
-	@RequestMapping("/")
-	public String index(Model model){
-		Msg msg =  new Msg("测试标题","测试内容","欢迎来到HOME页面,您拥有 ROLE_HOME 权限");
-		model.addAttribute("msg", msg);
-		return "home";
-	}
-	
-	@RequestMapping("/admin")
-	@ResponseBody
-	public String hello(){
-		return "hello admin";
-	}
-
-
 	@RequestMapping(value = "/auth", method = RequestMethod.POST)
-	@ResponseBody
 	public JwtUser auth() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (Objects.isNull(authentication)) {
 			return null;
-		}
+		}	
 		return (JwtUser) authentication.getDetails();
 	}
 
 	@RequestMapping(value = "/authlogin", method = RequestMethod.POST)
-	@ResponseBody
 	public ServerResponse createAuthenticationToken(
 			@RequestBody User user) throws AuthenticationException {
-		return ServerResponse.createBySuccess(userService.login(user.getUsername(), user.getPassword()));
+		return userService.login(user.getUsername(), user.getPassword());
+	}
+
+	@PostMapping("/register")
+	public ServerResponse register(@RequestBody User user, HttpServletRequest request) {
+		return userService.save(user, request);
 	}
 }

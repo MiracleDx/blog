@@ -44,4 +44,11 @@ public interface UserService {
 	 * @return
 	 */
 	ServerResponse login(String username, String password);
+
+	/**
+	 * 查询用户信息
+	 * @param token
+	 * @return
+	 */
+	ServerResponse getUserInfo();
 }

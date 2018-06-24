@@ -36,7 +36,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 	private UserDetailsService userDetailsService;
 	
 	@Value("${jwt.header}")
-	private String tokenHeader = "Authorization";
+	private String tokenHeader;
 
 	@Resource
 	private JwtTokenUtil jwtTokenUtil;
@@ -49,10 +49,19 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 		try {
-			Optional<Authentication> authentication = jwtTokenUtil.verifyToken(request);
-			log.debug("VerifyTokenFilter result: {}",authentication.orElse(null));
-			SecurityContextHolder.getContext().setAuthentication(authentication.orElse(null));
-			filterChain.doFilter(request,response);
+			response.setHeader("Access-Control-Allow-Origin", "*");
+			response.setHeader("Access-Control-Allow-Methods", "POST,GET,PUT,OPTIONS,DELETE");
+			response.setHeader("Access-Control-Allow-Headers", "Origin,X-Requested-With,Content-Type,Accept,Authorization,token");
+			// 获取请求方法 如果是预请求直接返回
+			String method = request.getMethod();
+			if (!method.equalsIgnoreCase("options")) {
+				Optional<Authentication> authentication = jwtTokenUtil.verifyToken(request);
+				log.debug("VerifyTokenFilter result: {}", authentication.orElse(null));
+				SecurityContextHolder.getContext().setAuthentication(authentication.orElse(null));
+				filterChain.doFilter(request,response);
+			} else {
+				return;
+			}
 		} catch (JwtException e) {
 			e.printStackTrace();
 			SecurityContextHolder.clearContext();

@@ -1,26 +1,23 @@
-package com.dongx.blog.dto;
+package com.dongx.blog.vo;
 
-import com.dongx.blog.entity.Role;
-import com.dongx.blog.entity.UserInfo;
 import lombok.Data;
 
 import java.util.Date;
-import java.util.List;
 
 /**
- * UserInfoDTO
+ * UserVo
  *
  * @author: dongx
  * Description:
- * Created in: 2018-06-02 14:12
+ * Created in: 2018-06-21 20:19
  * Modified by:
  */
 @Data
-public class UserInfoDTO {
+public class UserVo {
 
-	private Integer id;
+	private String id;
 
-	private String userId;
+	private String username;
 
 	private String nickname;
 
@@ -37,5 +34,4 @@ public class UserInfoDTO {
 	private Date loginTime;
 
 	private String loginIp;
-	
 }

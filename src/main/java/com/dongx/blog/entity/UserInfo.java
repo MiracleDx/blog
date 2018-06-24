@@ -16,7 +16,7 @@ public class UserInfo implements Serializable {
 
     private String nickname;
 
-    private Integer mobile;
+    private String mobile;
 
     private String avatar;
 
@@ -56,11 +56,11 @@ public class UserInfo implements Serializable {
         this.nickname = nickname == null ? null : nickname.trim();
     }
 
-    public Integer getMobile() {
+    public String getMobile() {
         return mobile;
     }
 
-    public void setMobile(Integer mobile) {
+    public void setMobile(String mobile) {
         this.mobile = mobile;
     }
 

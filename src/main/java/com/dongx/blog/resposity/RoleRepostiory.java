@@ -1,7 +1,10 @@
 package com.dongx.blog.resposity;
 
 import com.dongx.blog.entity.Role;
+import com.dongx.blog.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 /**
  * RoleRepostiory

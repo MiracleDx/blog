@@ -108,7 +108,7 @@
     </collection>
   </resultMap>
   
-  <insert id="insertRoleWithUser" parameterType="map" useGeneratedKeys="true">
+  <insert id="insertRoleWithUser" parameterType="map" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO 
       blog_user_role
       (user_id, role_id)
