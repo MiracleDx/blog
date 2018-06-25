@@ -8,6 +8,8 @@ import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 
 import java.io.*;
+import java.time.Duration;
+import java.time.Instant;
 
 /**
  * FtpUtils
@@ -31,6 +33,9 @@ public class FtpUtils {
 	
 	/** 登录密码 */
 	private String password = "dongx";
+	
+	/** FTP服务器基础目录 */
+	private String basePath = "/pub";
 
 
 	FTPClient ftpClient;
@@ -60,19 +65,18 @@ public class FtpUtils {
 	
 	/**
 	 * 
-	 * @param basePath FTP服务器基础目录
 	 * @param filePath FTP服务器文件存放路径 文件的路径为basePath + filePath
 	 * @param fileName 上传到FTP服务器的文件名
 	 * @param input 输入流   
 	 * @return
 	 */
-	public boolean uploadFile(String basePath, String filePath, String fileName, InputStream input) {
+	public boolean uploadFile(String filePath, String fileName, InputStream input) {
 		boolean result = false;
 		ftpClient = new FTPClient();
 		try {
 			initFtpClient();
 			// 切换到上传目录
-			result = changeWorkDirectory(basePath, filePath);
+			result = changeWorkDirectory(filePath);
 			if (result == false) {
 				return result;
 			}
@@ -88,13 +92,13 @@ public class FtpUtils {
 
 	/**
 	 * 上传文章并写入文件
-	 * @param basePath FTP服务器基础目录
 	 * @param filePath FTP服务器文件存放路径 文件的路径为basePath + filePath
 	 * @param fileName 上传到FTP服务器的文件名
 	 * @param content 文章内容
 	 * @return
 	 */
-	public boolean uploadContent(String basePath, String filePath, String fileName, String content) {
+	public boolean uploadContent(String filePath, String fileName, String content) {
+		Instant start = Instant.now();
 		boolean result = false;
 		ftpClient = new FTPClient();
 		InputStream is;
@@ -102,7 +106,7 @@ public class FtpUtils {
 			initFtpClient();
 			is = new ByteArrayInputStream(content.getBytes());
 			// 切换到上传目录
-			result = changeWorkDirectory(basePath, filePath);
+			result = changeWorkDirectory(filePath);
 			if (result == false) {
 				return result;
 			}
@@ -113,23 +117,24 @@ public class FtpUtils {
 		} finally {
 			disConnectClient();
 		}
+		Instant end = Instant.now();
+		log.info("upload Content spend times {}:", Duration.between(start, end).toMillis());
 		return result;
 	}
 
 	/**
 	 * 读取ftp服务器上的文件内容
-	 * @param basePath FTP服务器基础目录
 	 * @param filePath FTP服务器文件存放路径 文件的路径为basePath + filePath
 	 * @param fileName 上传到FTP服务器的文件名
 	 * @return
 	 */
-	public String readContent(String basePath, String filePath, String fileName) {
+	public String readContent(String filePath, String fileName) {
 		ftpClient = new FTPClient();
 		String encoding = "UTF-8";
 		StringBuilder builder = null;
 		try {
 			initFtpClient();
-			changeWorkDirectory(basePath, filePath);
+			changeWorkDirectory(filePath);
 			ftpClient.enterLocalPassiveMode();
 			InputStream is = ftpClient.retrieveFileStream(newString(fileName));
 			BufferedReader reader = new BufferedReader(new InputStreamReader(is, encoding));
@@ -158,17 +163,16 @@ public class FtpUtils {
 
 	/**
 	 * 删除ftp服务器上的文件
-	 * @param basePath FTP服务器基础目录
 	 * @param filePath FTP服务器文件存放路径 文件的路径为basePath + filePath
 	 * @param fileName 上传到FTP服务器的文件名
 	 * @return
 	 */
-	public boolean deleteFile(String basePath, String filePath, String fileName) {
+	public boolean deleteFile(String filePath, String fileName) {
 		boolean result = false;
 		ftpClient = new FTPClient();
 		try {
 			initFtpClient();
-			result = changeWorkDirectory(basePath, filePath);
+			result = changeWorkDirectory(filePath);
 			if (result == false) {
 				return result;
 			}
@@ -220,11 +224,10 @@ public class FtpUtils {
 
 	/**
 	 * 切换工作目录
-	 * @param basePath
 	 * @param filePath
 	 * @throws Exception
 	 */
-	private boolean changeWorkDirectory(String basePath, String filePath) throws Exception {
+	private boolean changeWorkDirectory(String filePath) throws Exception {
 		boolean result = false;
 		if (!ftpClient.changeWorkingDirectory(newString(basePath + filePath))) {
 			log.info("changeDirectory failed: {}", basePath + filePath);

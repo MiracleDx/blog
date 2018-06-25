@@ -33,6 +33,7 @@ import java.util.Objects;
 @CrossOrigin
 @RestController
 @Slf4j
+@RequestMapping
 public class HelloController {
 	
 	@Resource
@@ -53,7 +54,7 @@ public class HelloController {
 		return (JwtUser) authentication.getDetails();
 	}
 
-	@RequestMapping(value = "/authlogin", method = RequestMethod.POST)
+	@PostMapping("/authlogin")
 	public ServerResponse createAuthenticationToken(
 			@RequestBody User user) throws AuthenticationException {
 		return userService.login(user.getUsername(), user.getPassword());

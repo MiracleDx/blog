@@ -1,13 +1,13 @@
 package com.dongx.blog.controller;
 
-import com.dongx.blog.entity.User;
 import com.dongx.blog.service.UserService;
 import com.dongx.blog.sys.ServerResponse;
-import org.apache.catalina.Server;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * UserController
@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
  * Created in: 2018-05-31 17:19
  * Modified by:
  */
+@CrossOrigin
 @RestController
 @RequestMapping("/user")
 public class UserController {

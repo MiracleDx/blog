@@ -4,18 +4,23 @@ import com.dongx.blog.common.CommonStatus;
 import com.dongx.blog.dto.BlogDTO;
 import com.dongx.blog.entity.Blog;
 import com.dongx.blog.resposity.BlogRepository;
+import com.dongx.blog.security.JwtUser;
 import com.dongx.blog.service.BlogService;
 import com.dongx.blog.sys.ServerResponse;
+import com.dongx.blog.utils.FtpUtils;
 import com.dongx.blog.utils.GeneratorKeyUtil;
+import com.dongx.blog.utils.UserUtil;
 import com.dongx.blog.vo.BlogVo;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.time.Instant;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * BlogServiceImpl
@@ -59,6 +64,8 @@ public class BlogServiceImpl implements BlogService {
 	@Override
 	public ServerResponse update(BlogDTO blogDTO) {
 		
+		JwtUser user = UserUtil.getUser();
+		
 		if (blogDTO == null) {
 			return null;
 		}
@@ -69,12 +76,12 @@ public class BlogServiceImpl implements BlogService {
 
 		// 保存文章内容
 		String content = blogDTO.getContent();
-		String address = this.uploadFile(content);
+		Map<String, String> resultMap = this.uploadFile(content, user.getId());
 
-		if (StringUtils.isNotEmpty(address)) {
+		if (resultMap != null) {
 			Blog blog = new Blog();
 			BeanUtils.copyProperties(blogDTO, blog);
-			blog.setAddress(address);
+			blog.setAddress(resultMap.get("filePath"));
 			Blog result = blogRepository.save(blog);
 			if (result != null) {
 				BlogVo vo = new BlogVo();
@@ -88,7 +95,9 @@ public class BlogServiceImpl implements BlogService {
 	}
 
 	@Override
+	@Transactional
 	public ServerResponse save(BlogDTO blogDTO) {
+		JwtUser user = UserUtil.getUser();
 		
 		if (blogDTO == null) {
 			return null;
@@ -96,16 +105,19 @@ public class BlogServiceImpl implements BlogService {
 		
 		// 保存文章内容
 		String content = blogDTO.getContent();
-		String address = this.uploadFile(content);
+		Map<String, String> resultMap = this.uploadFile(content, user.getId());
 		
-		if (StringUtils.isNotEmpty(address)) {
+		if (resultMap != null) {
 			Blog blog = new Blog();
 			BeanUtils.copyProperties(blogDTO, blog);
 			
 			Date now = Date.from(Instant.now());
 			blog.setId(GeneratorKeyUtil.getInstance().generatorKey("blog"));
-			blog.setAddress(address);
+			blog.setAddress(resultMap.get("filePath"));
+			blog.setFilename(resultMap.get("fileName"));
+			blog.setCreateUser(user.getId());
 			blog.setCrreateTime(now);
+			blog.setUpdateUser(user.getId());
 			blog.setUpdateTime(now);
 			blog.setStatus(CommonStatus.ACTIVE.getCode());
 			Blog result = blogRepository.save(blog);
@@ -114,9 +126,9 @@ public class BlogServiceImpl implements BlogService {
 				BeanUtils.copyProperties(result, vo);
 				vo.setContent(content);
 				log.info("博客保存成功：{}", blog.getTitle());
-				return ServerResponse.createBySuccess("保存成功", blogDTO);
+				return ServerResponse.createBySuccess("保存成功", vo);
 			}
-		}
+		} 
 		return ServerResponse.createByError("保存失败");
 	}
 
@@ -136,9 +148,20 @@ public class BlogServiceImpl implements BlogService {
 	/**
 	 * 博客正文上传方法 存入文件 返回文件存储路径
 	 * @param content 博客正文
+	 * @param userid 用户id
 	 * @return
 	 */
-	private String uploadFile(String content) {
+	private Map<String, String> uploadFile(String content, String userid) {
+		FtpUtils ftpUtils = new FtpUtils();
+		String filePath = "/blog/" + userid;
+		String fileName = String.valueOf(System.currentTimeMillis());
+		boolean result = ftpUtils.uploadContent(filePath, fileName, content);
+		if (result) {
+			Map<String, String> resultMap = new HashMap<>();
+			resultMap.put("filePath", filePath);
+			resultMap.put("fileName", fileName);
+			return resultMap;
+		}
 		return null;
 	}
 

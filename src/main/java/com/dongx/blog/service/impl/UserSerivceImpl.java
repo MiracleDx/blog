@@ -13,10 +13,7 @@ import com.dongx.blog.resposity.UserRepository;
 import com.dongx.blog.security.JwtUser;
 import com.dongx.blog.service.UserService;
 import com.dongx.blog.sys.ServerResponse;
-import com.dongx.blog.utils.EncoderUtil;
-import com.dongx.blog.utils.GeneratorKeyUtil;
-import com.dongx.blog.utils.IpUtil;
-import com.dongx.blog.utils.JwtTokenUtil;
+import com.dongx.blog.utils.*;
 import com.dongx.blog.vo.UserVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +21,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
@@ -188,8 +184,7 @@ public class UserSerivceImpl implements UserService {
 	
 	@Override
 	public ServerResponse getUserInfo() {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		JwtUser user = (JwtUser) authentication.getDetails();
+		JwtUser user = UserUtil.getUser();
 		
 		UserInfo userInfo = userInfoRepository.findUserInfoByUserId(user.getId());
 		String defaultAvatar = "/static/images/avatars/user2.jpg";

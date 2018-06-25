@@ -26,7 +26,7 @@ public class FtpUtilsTest {
 		FtpUtils ftpUtils = new FtpUtils();
 		try {
 			InputStream input = new FileInputStream(new File("C:\\Users\\77542\\Desktop\\user.jpg"));
-			ftpUtils.uploadFile("/pub", "/images/test", "test.jpg", input);
+			ftpUtils.uploadFile("/images/test", "test.jpg", input);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -35,19 +35,19 @@ public class FtpUtilsTest {
 	@Test
 	public void test2() {
 		FtpUtils ftpUtils = new FtpUtils();
-		ftpUtils.uploadContent("/pub", "/blog/test", "test.txt", "Hello World!!!");
+		ftpUtils.uploadContent("/blog/test", "test.txt", "Hello World!!!");
 	}
 	
 	@Test
 	public void test3() {
 		FtpUtils ftpUtils = new FtpUtils();
-		System.out.println(ftpUtils.readContent("/pub", "/blog/test", "test.txt"));
+		System.out.println(ftpUtils.readContent("/blog/test", "test.txt"));
 	}
 
 	@Test
 	public void test4() {
 		FtpUtils ftpUtils = new FtpUtils();
-		System.out.println(ftpUtils.deleteFile("/pub", "/blog/test", "test.txt"));
+		System.out.println(ftpUtils.deleteFile("/blog/test", "test.txt"));
 	}
 	
 	

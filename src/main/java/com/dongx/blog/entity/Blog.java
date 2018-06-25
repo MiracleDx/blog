@@ -21,6 +21,8 @@ public class Blog implements Serializable {
 
     private String address;
 
+    private String filename;
+
     private String createUser;
 
     private Date crreateTime;
@@ -71,6 +73,14 @@ public class Blog implements Serializable {
 
     public void setAddress(String address) {
         this.address = address == null ? null : address.trim();
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename == null ? null : filename.trim();
     }
 
     public String getCreateUser() {

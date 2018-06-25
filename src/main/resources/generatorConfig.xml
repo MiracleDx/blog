@@ -93,13 +93,14 @@
            enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"/>
 
     <table tableName="blog_comment" domainObjectName="Comment" enableCountByExample="false"
-           enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"/>-->
+           enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"/>
     
     <table tableName="blog_category" domainObjectName="Category" enableCountByExample="false"
            enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"/>
 
     <table tableName="blog_total" domainObjectName="total" enableCountByExample="false"
-           enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"/>
+           enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"/>-->
+    
 </context>
 </generatorConfiguration>  
 
