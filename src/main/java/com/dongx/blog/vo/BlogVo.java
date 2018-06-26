@@ -27,7 +27,7 @@ public class BlogVo {
 
 	private String createUser;
 
-	private Date crreateTime;
+	private Date createTime;
 
 	private String updateUser;
 

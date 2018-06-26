@@ -25,7 +25,7 @@ public class Blog implements Serializable {
 
     private String createUser;
 
-    private Date crreateTime;
+    private Date createTime;
 
     private String updateUser;
 
@@ -91,12 +91,12 @@ public class Blog implements Serializable {
         this.createUser = createUser == null ? null : createUser.trim();
     }
 
-    public Date getCrreateTime() {
-        return crreateTime;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCrreateTime(Date crreateTime) {
-        this.crreateTime = crreateTime;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
     public String getUpdateUser() {

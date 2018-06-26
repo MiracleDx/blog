@@ -25,9 +25,25 @@ public class BlogController {
 	@Resource
 	private BlogService blogService;
 	
+	@GetMapping("/findAll")
+	public ServerResponse findAll() {
+		return blogService.findAll();
+	}
+	
+	@GetMapping("/findOne/{id}")
+	public ServerResponse findOne(@PathVariable String id) {
+		return blogService.findOne(id);
+	}
+	
+	
 	@PostMapping("/save")
 	public ServerResponse save(@RequestBody BlogDTO blogDTO) {
 		return blogService.save(blogDTO);
+	}
+
+	@PostMapping("/update")
+	public ServerResponse update(@RequestBody BlogDTO blogDTO) {
+		return blogService.update(blogDTO);
 	}
 	
 }

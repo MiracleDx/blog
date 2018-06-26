@@ -9,13 +9,13 @@
     <result column="address" jdbcType="VARCHAR" property="address" />
     <result column="filename" jdbcType="VARCHAR" property="filename" />
     <result column="create_user" jdbcType="VARCHAR" property="createUser" />
-    <result column="crreate_time" jdbcType="TIMESTAMP" property="crreateTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="status" jdbcType="INTEGER" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, title, description, category, address, filename, create_user, crreate_time, update_user, 
+    id, title, description, category, address, filename, create_user, create_time, update_user, 
     update_time, status
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -31,11 +31,11 @@
   <insert id="insert" parameterType="com.dongx.blog.entity.Blog">
     insert into blog_blog (id, title, description, 
       category, address, filename, 
-      create_user, crreate_time, update_user, 
+      create_user, create_time, update_user, 
       update_time, status)
     values (#{id,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
       #{category,jdbcType=INTEGER}, #{address,jdbcType=VARCHAR}, #{filename,jdbcType=VARCHAR}, 
-      #{createUser,jdbcType=VARCHAR}, #{crreateTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, 
+      #{createUser,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.dongx.blog.entity.Blog">
@@ -62,8 +62,8 @@
       <if test="createUser != null">
         create_user,
       </if>
-      <if test="crreateTime != null">
-        crreate_time,
+      <if test="createTime != null">
+        create_time,
       </if>
       <if test="updateUser != null">
         update_user,
@@ -97,8 +97,8 @@
       <if test="createUser != null">
         #{createUser,jdbcType=VARCHAR},
       </if>
-      <if test="crreateTime != null">
-        #{crreateTime,jdbcType=TIMESTAMP},
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updateUser != null">
         #{updateUser,jdbcType=VARCHAR},
@@ -132,8 +132,8 @@
       <if test="createUser != null">
         create_user = #{createUser,jdbcType=VARCHAR},
       </if>
-      <if test="crreateTime != null">
-        crreate_time = #{crreateTime,jdbcType=TIMESTAMP},
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updateUser != null">
         update_user = #{updateUser,jdbcType=VARCHAR},
@@ -155,7 +155,7 @@
       address = #{address,jdbcType=VARCHAR},
       filename = #{filename,jdbcType=VARCHAR},
       create_user = #{createUser,jdbcType=VARCHAR},
-      crreate_time = #{crreateTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
       update_user = #{updateUser,jdbcType=VARCHAR},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       status = #{status,jdbcType=INTEGER}

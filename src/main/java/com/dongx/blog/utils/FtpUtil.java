@@ -12,7 +12,7 @@ import java.time.Duration;
 import java.time.Instant;
 
 /**
- * FtpUtils
+ * FtpUtil
  *
  * @author: dongx
  * Description:
@@ -20,7 +20,7 @@ import java.time.Instant;
  * Modified by:
  */
 @Slf4j
-public class FtpUtils {
+public class FtpUtil {
 
 	/** ftp服务器地址 */
 	private String hostname = "172.16.200.68";
@@ -118,7 +118,7 @@ public class FtpUtils {
 			disConnectClient();
 		}
 		Instant end = Instant.now();
-		log.info("upload Content spend times {}:", Duration.between(start, end).toMillis());
+		log.info("upload Content spend times : {}", Duration.between(start, end).toMillis());
 		return result;
 	}
 
@@ -129,6 +129,7 @@ public class FtpUtils {
 	 * @return
 	 */
 	public String readContent(String filePath, String fileName) {
+		Instant start = Instant.now();
 		ftpClient = new FTPClient();
 		String encoding = "UTF-8";
 		StringBuilder builder = null;
@@ -156,7 +157,9 @@ public class FtpUtils {
 			disConnectClient();
 		}
 		
+		Instant end = Instant.now();
 		String content = builder.toString();
+		log.info("read content spend times : {}", Duration.between(start, end).toMillis());
 		return content;
 	}
 
@@ -173,7 +176,7 @@ public class FtpUtils {
 		try {
 			initFtpClient();
 			result = changeWorkDirectory(filePath);
-			if (result == false) {
+			if (!result) {
 				return result;
 			}
 			ftpClient.enterLocalPassiveMode();

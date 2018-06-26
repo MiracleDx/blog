@@ -27,7 +27,7 @@ public class BlogDTO {
 
 	private String createUser;
 
-	private Date crreateTime;
+	private Date createTime;
 
 	private String updateUser;
 
