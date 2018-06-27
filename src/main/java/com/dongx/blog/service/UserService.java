@@ -43,7 +43,7 @@ public interface UserService {
 	 * @param password
 	 * @return
 	 */
-	ServerResponse login(String username, String password);
+	ServerResponse login(String username, String password, HttpServletRequest request);
 
 	/**
 	 * 查询用户信息

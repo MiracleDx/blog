@@ -23,7 +23,9 @@ public class CommentDTO {
 
 	private String createUser;
 
-	private Date crreateTime;
+	private Date createTime;
 
 	private Integer status;
+
+	private String pid;
 }

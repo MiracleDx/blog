@@ -40,7 +40,7 @@ public class CommentServiceImpl implements CommentService {
 		
 		Comment comment = new Comment();
 		BeanUtils.copyProperties(commentDTO, comment);
-		comment.setCrreateTime(Date.from(Instant.now()));
+		comment.setCreateTime(Date.from(Instant.now()));
 		Comment result = commentRepository.save(comment);
 		
 		if (result != null) {

@@ -56,8 +56,8 @@ public class HelloController {
 
 	@PostMapping("/authlogin")
 	public ServerResponse createAuthenticationToken(
-			@RequestBody User user) throws AuthenticationException {
-		return userService.login(user.getUsername(), user.getPassword());
+			@RequestBody User user, HttpServletRequest request) throws AuthenticationException {
+		return userService.login(user.getUsername(), user.getPassword(), request);
 	}
 
 	@PostMapping("/register")

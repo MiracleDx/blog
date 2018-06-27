@@ -111,4 +111,20 @@ public class UserInfo implements Serializable {
     public void setLoginIp(String loginIp) {
         this.loginIp = loginIp == null ? null : loginIp.trim();
     }
+
+    @Override
+    public String toString() {
+        return "UserInfo{" +
+                "id=" + id +
+                ", userId='" + userId + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", registerTime=" + registerTime +
+                ", registerIp='" + registerIp + '\'' +
+                ", updateTime=" + updateTime +
+                ", loginTime=" + loginTime +
+                ", loginIp='" + loginIp + '\'' +
+                '}';
+    }
 }

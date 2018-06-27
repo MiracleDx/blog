@@ -6,11 +6,12 @@
     <result column="blog_id" jdbcType="VARCHAR" property="blogId" />
     <result column="content" jdbcType="VARCHAR" property="content" />
     <result column="create_user" jdbcType="VARCHAR" property="createUser" />
-    <result column="crreate_time" jdbcType="TIMESTAMP" property="crreateTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="pid" jdbcType="VARCHAR" property="pid" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, blog_id, content, create_user, crreate_time, status
+    id, blog_id, content, create_user, create_time, status, pid
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -24,11 +25,11 @@
   </delete>
   <insert id="insert" parameterType="com.dongx.blog.entity.Comment">
     insert into blog_comment (id, blog_id, content, 
-      create_user, crreate_time, status
-      )
+      create_user, create_time, status, 
+      pid)
     values (#{id,jdbcType=VARCHAR}, #{blogId,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, 
-      #{createUser,jdbcType=VARCHAR}, #{crreateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}
-      )
+      #{createUser,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, 
+      #{pid,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.dongx.blog.entity.Comment">
     insert into blog_comment
@@ -45,11 +46,14 @@
       <if test="createUser != null">
         create_user,
       </if>
-      <if test="crreateTime != null">
-        crreate_time,
+      <if test="createTime != null">
+        create_time,
       </if>
       <if test="status != null">
         status,
+      </if>
+      <if test="pid != null">
+        pid,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -65,11 +69,14 @@
       <if test="createUser != null">
         #{createUser,jdbcType=VARCHAR},
       </if>
-      <if test="crreateTime != null">
-        #{crreateTime,jdbcType=TIMESTAMP},
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="status != null">
         #{status,jdbcType=INTEGER},
+      </if>
+      <if test="pid != null">
+        #{pid,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -85,11 +92,14 @@
       <if test="createUser != null">
         create_user = #{createUser,jdbcType=VARCHAR},
       </if>
-      <if test="crreateTime != null">
-        crreate_time = #{crreateTime,jdbcType=TIMESTAMP},
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="status != null">
         status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="pid != null">
+        pid = #{pid,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}
@@ -99,8 +109,9 @@
     set blog_id = #{blogId,jdbcType=VARCHAR},
       content = #{content,jdbcType=VARCHAR},
       create_user = #{createUser,jdbcType=VARCHAR},
-      crreate_time = #{crreateTime,jdbcType=TIMESTAMP},
-      status = #{status,jdbcType=INTEGER}
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER},
+      pid = #{pid,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>

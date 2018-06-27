@@ -54,4 +54,15 @@ public class UserAuths implements Serializable {
     public void setCredential(String credential) {
         this.credential = credential == null ? null : credential.trim();
     }
+
+    @Override
+    public String toString() {
+        return "UserAuths{" +
+                "id=" + id +
+                ", userId='" + userId + '\'' +
+                ", identityType='" + identityType + '\'' +
+                ", identifier='" + identifier + '\'' +
+                ", credential='" + credential + '\'' +
+                '}';
+    }
 }

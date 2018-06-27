@@ -84,4 +84,18 @@ public class total implements Serializable {
     public void setStatus(Integer status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "total{" +
+                "id=" + id +
+                ", userid='" + userid + '\'' +
+                ", refid='" + refid + '\'' +
+                ", likeTotal=" + likeTotal +
+                ", replayTotal=" + replayTotal +
+                ", totaltype=" + totaltype +
+                ", reftype=" + reftype +
+                ", status=" + status +
+                '}';
+    }
 }

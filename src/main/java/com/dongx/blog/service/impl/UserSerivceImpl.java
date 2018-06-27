@@ -165,7 +165,7 @@ public class UserSerivceImpl implements UserService {
 	}
 
 	@Override
-	public ServerResponse login(String username, String password) {
+	public ServerResponse login(String username, String password, HttpServletRequest request) {
 
 		if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
 			throw new AuthenticationServiceException("Username or Password not provided");
@@ -179,6 +179,13 @@ public class UserSerivceImpl implements UserService {
 				user, null, user.getAuthorities());
 		log.info("authenticated user " + username + ", setting security context");
 		SecurityContextHolder.getContext().setAuthentication(authentication);
+		// 更新登录时间及ip
+		Date now = Date.from(Instant.now());
+		UserInfo userInfo = userInfoRepository.findUserInfoByUserId(user.getId());
+		userInfo.setLoginTime(now);
+		String ip = IpUtils.getIpAddr(request);
+		userInfo.setLoginIp(ip);
+		userInfoRepository.save(userInfo);
 		return ServerResponse.createBySuccess("登录成功", token);
 	}
 	

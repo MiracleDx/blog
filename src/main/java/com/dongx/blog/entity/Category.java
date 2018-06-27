@@ -50,4 +50,14 @@ public class Category implements Serializable {
     public void setStatus(Integer status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "Category{" +
+                "id=" + id +
+                ", cartegorycode=" + cartegorycode +
+                ", cartegorytype='" + cartegorytype + '\'' +
+                ", status=" + status +
+                '}';
+    }
 }
