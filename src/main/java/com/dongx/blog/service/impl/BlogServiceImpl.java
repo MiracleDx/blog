@@ -11,9 +11,9 @@ import com.dongx.blog.resposity.UserRepository;
 import com.dongx.blog.security.JwtUser;
 import com.dongx.blog.service.BlogService;
 import com.dongx.blog.sys.ServerResponse;
-import com.dongx.blog.utils.FtpUtil;
-import com.dongx.blog.utils.GeneratorKeyUtil;
-import com.dongx.blog.utils.UserUtil;
+import com.dongx.blog.utils.FtpUtils;
+import com.dongx.blog.utils.GeneratorKeyUtils;
+import com.dongx.blog.utils.UserUtils;
 import com.dongx.blog.vo.BlogVo;
 import com.dongx.blog.vo.UserVo;
 import lombok.extern.slf4j.Slf4j;
@@ -105,7 +105,7 @@ public class BlogServiceImpl implements BlogService {
 	@Transactional
 	public ServerResponse update(BlogDTO blogDTO) {
 		
-		JwtUser user = UserUtil.getUser();
+		JwtUser user = UserUtils.getUser();
 		
 		if (blogDTO == null) {
 			return null;
@@ -148,7 +148,7 @@ public class BlogServiceImpl implements BlogService {
 	@Override
 	@Transactional
 	public ServerResponse save(BlogDTO blogDTO) {
-		JwtUser user = UserUtil.getUser();
+		JwtUser user = UserUtils.getUser();
 		
 		if (blogDTO == null) {
 			return null;
@@ -164,7 +164,7 @@ public class BlogServiceImpl implements BlogService {
 			BeanUtils.copyProperties(blogDTO, blog);
 			
 			Date now = Date.from(Instant.now());
-			blog.setId(GeneratorKeyUtil.getInstance().generatorKey("blog"));
+			blog.setId(GeneratorKeyUtils.getInstance().generatorKey("blog"));
 			blog.setAddress(resultMap.get("filePath"));
 			blog.setFilename(resultMap.get("fileName"));
 			blog.setCreateUser(user.getId());
@@ -202,10 +202,10 @@ public class BlogServiceImpl implements BlogService {
 	 * @return
 	 */
 	private Map<String, String> uploadFile(String content, String userid) {
-		FtpUtil ftpUtil = new FtpUtil();
+		FtpUtils ftpUtils = new FtpUtils();
 		String filePath = "/blog/" + userid;
 		String fileName = userid + String.valueOf(System.currentTimeMillis());
-		boolean result = ftpUtil.uploadContent(filePath, fileName, content);
+		boolean result = ftpUtils.uploadContent(filePath, fileName, content);
 		if (result) {
 			Map<String, String> resultMap = new HashMap<>();
 			resultMap.put("filePath", filePath);
@@ -222,8 +222,8 @@ public class BlogServiceImpl implements BlogService {
 	 * @return
 	 */
 	private String readFile(String address, String fileName) {
-		FtpUtil ftpUtil = new FtpUtil();
-		String content = ftpUtil.readContent(address , fileName);
+		FtpUtils ftpUtils = new FtpUtils();
+		String content = ftpUtils.readContent(address , fileName);
 		return content;
 	}
 
@@ -234,7 +234,7 @@ public class BlogServiceImpl implements BlogService {
 	 * @return
 	 */
 	private boolean deleteFile(String address, String fileName) {
-		FtpUtil ftpUtils = new FtpUtil();
+		FtpUtils ftpUtils = new FtpUtils();
 		return ftpUtils.deleteFile(address, fileName);
 		 
 	}

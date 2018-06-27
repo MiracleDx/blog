@@ -61,7 +61,7 @@ public class UserSerivceImpl implements UserService {
 	private UserDetailsService userDetailsService;
 
 	@Autowired
-	private JwtTokenUtil jwtTokenUtil;
+	private JwtTokenUtils jwtTokenUtils;
 	
 	@Override
 	@Transactional
@@ -82,10 +82,10 @@ public class UserSerivceImpl implements UserService {
 		
 		// 对密码进行加密处理
 		String password = user.getPassword();
-		String newPassword = EncoderUtil.PasswordEncoder(password);
+		String newPassword = EncoderUtils.PasswordEncoder(password);
 		
 		// 获取主键
-		String userId = GeneratorKeyUtil.getInstance().generatorKey();
+		String userId = GeneratorKeyUtils.getInstance().generatorKey();
 		
 		// 存入用户
 		user.setId(userId);
@@ -103,7 +103,7 @@ public class UserSerivceImpl implements UserService {
 		// 存入用户角色信息
 		UserInfo userInfo = new UserInfo();
 		Date now = Date.from(Instant.now());
-		String ip = IpUtil.getIpAddr(request);
+		String ip = IpUtils.getIpAddr(request);
 		userInfo.setUserId(userId);
 		userInfo.setLoginIp(ip);
 		userInfo.setLoginTime(now);
@@ -172,7 +172,7 @@ public class UserSerivceImpl implements UserService {
 		}
 		
 		JwtUser user = (JwtUser) userDetailsService.loadUserByUsername(username);
-		String token = jwtTokenUtil.createToken(user);
+		String token = jwtTokenUtils.createToken(user);
 		log.info(token);
 
 		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
@@ -184,7 +184,7 @@ public class UserSerivceImpl implements UserService {
 	
 	@Override
 	public ServerResponse getUserInfo() {
-		JwtUser user = UserUtil.getUser();
+		JwtUser user = UserUtils.getUser();
 		
 		UserInfo userInfo = userInfoRepository.findUserInfoByUserId(user.getId());
 		String defaultAvatar = "/static/images/avatars/user2.jpg";

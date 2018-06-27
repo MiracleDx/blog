@@ -10,14 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * MyBatisGeneratorUtil
+ * MyBatisGeneratorUtils
  *
  * @author: dongx
  * Description: mybatis逆向生成工具类
  * Created in: 2018-05-13 18:23
  * Modified by:
  */
-public class MyBatisGeneratorUtil {
+public class MyBatisGeneratorUtils {
 	
 	public void generator() throws Exception{
 		List<String> warnings = new ArrayList<>();
@@ -35,7 +35,7 @@ public class MyBatisGeneratorUtil {
 
 	public static void main(String[] args) throws Exception {
 		try {
-			MyBatisGeneratorUtil generatorSqlmap = new MyBatisGeneratorUtil();
+			MyBatisGeneratorUtils generatorSqlmap = new MyBatisGeneratorUtils();
 			generatorSqlmap.generator();
 		} catch (Exception e) {
 			e.printStackTrace();

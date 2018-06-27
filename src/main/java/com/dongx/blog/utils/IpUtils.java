@@ -3,14 +3,14 @@ package com.dongx.blog.utils;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * IpUtil
+ * IpUtils
  *
  * @author: dongx
  * Description:
  * Created in: 2018-06-02 15:12
  * Modified by:
  */
-public class IpUtil {
+public class IpUtils {
 
 	public static String getIpAddr(HttpServletRequest request) {
 		String ip = request.getHeader(" x-forwarded-for ");

@@ -1,16 +1,12 @@
 package com.dongx.blog.security;
 
-import com.dongx.blog.utils.JwtTokenUtil;
+import com.dongx.blog.utils.JwtTokenUtils;
 import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.annotation.Resource;
@@ -39,10 +35,10 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 	private String tokenHeader;
 
 	@Resource
-	private JwtTokenUtil jwtTokenUtil;
+	private JwtTokenUtils jwtTokenUtils;
 
-	public JwtAuthenticationTokenFilter(JwtTokenUtil jwtTokenUtil) {
-		this.jwtTokenUtil = jwtTokenUtil;
+	public JwtAuthenticationTokenFilter(JwtTokenUtils jwtTokenUtils) {
+		this.jwtTokenUtils = jwtTokenUtils;
 	}
 	
 	
@@ -55,7 +51,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 			// 获取请求方法 如果是预请求直接返回
 			String method = request.getMethod();
 			if (!method.equalsIgnoreCase("options")) {
-				Optional<Authentication> authentication = jwtTokenUtil.verifyToken(request);
+				Optional<Authentication> authentication = jwtTokenUtils.verifyToken(request);
 				log.debug("VerifyTokenFilter result: {}", authentication.orElse(null));
 				SecurityContextHolder.getContext().setAuthentication(authentication.orElse(null));
 				filterChain.doFilter(request,response);

@@ -24,7 +24,7 @@ import java.util.Optional;
  * Modified by:
  */
 @Component
-public class JwtTokenUtil {
+public class JwtTokenUtils {
 	
 	@Value("${jwt.secret}")
 	private String SECRET;

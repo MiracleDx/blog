@@ -12,7 +12,7 @@ import java.time.Duration;
 import java.time.Instant;
 
 /**
- * FtpUtil
+ * FtpUtils
  *
  * @author: dongx
  * Description:
@@ -20,7 +20,7 @@ import java.time.Instant;
  * Modified by:
  */
 @Slf4j
-public class FtpUtil {
+public class FtpUtils {
 
 	/** ftp服务器地址 */
 	private String hostname = "172.16.200.68";

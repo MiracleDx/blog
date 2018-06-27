@@ -23,7 +23,7 @@ public class FtpUtilsTest {
 
 	@Test
 	public void test() {
-		FtpUtil ftpUtils = new FtpUtil();
+		FtpUtils ftpUtils = new FtpUtils();
 		try {
 			InputStream input = new FileInputStream(new File("C:\\Users\\77542\\Desktop\\user.jpg"));
 			ftpUtils.uploadFile("/images/test", "test.jpg", input);
@@ -34,19 +34,19 @@ public class FtpUtilsTest {
 	
 	@Test
 	public void test2() {
-		FtpUtil ftpUtils = new FtpUtil();
+		FtpUtils ftpUtils = new FtpUtils();
 		ftpUtils.uploadContent("/blog/test", "test.txt", "Hello World!!!");
 	}
 	
 	@Test
 	public void test3() {
-		FtpUtil ftpUtils = new FtpUtil();
+		FtpUtils ftpUtils = new FtpUtils();
 		System.out.println(ftpUtils.readContent("/blog/test", "test.txt"));
 	}
 
 	@Test
 	public void test4() {
-		FtpUtil ftpUtils = new FtpUtil();
+		FtpUtils ftpUtils = new FtpUtils();
 		System.out.println(ftpUtils.deleteFile("/blog/test", "test.txt"));
 	}
 	

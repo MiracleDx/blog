@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
- * GeneratorKeyUtilTest
+ * GeneratorKeyUtilsTest
  *
  * @author: dongx
  * Description:
@@ -16,11 +16,11 @@ import org.springframework.test.context.junit4.SpringRunner;
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class GeneratorKeyUtilTest {
+public class GeneratorKeyUtilsTest {
 
 	@Test
 	public void testKey()  {
-		GeneratorKeyUtil keyUtil = GeneratorKeyUtil.getInstance();
+		GeneratorKeyUtils keyUtil = GeneratorKeyUtils.getInstance();
 		String result = keyUtil.generatorKey();
 		String result2 = keyUtil.generatorKey("dongx");
 		Assert.assertEquals(32, result.length());

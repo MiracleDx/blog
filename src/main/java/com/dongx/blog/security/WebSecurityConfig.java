@@ -1,7 +1,6 @@
 package com.dongx.blog.security;
 
-import com.dongx.blog.utils.JwtTokenUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.dongx.blog.utils.JwtTokenUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,7 +15,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.context.NullSecurityContextRepository;
 
 import javax.annotation.Resource;
 
@@ -40,7 +38,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private UserDetailsService userDetailsService;
 	
 	@Resource
-	private JwtTokenUtil jwtTokenUtil;
+	private JwtTokenUtils jwtTokenUtils;
 
 	@Resource
 	public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -85,7 +83,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.anyRequest().authenticated();
 
 		// 过滤验签
-		http.addFilterBefore(new JwtAuthenticationTokenFilter(jwtTokenUtil),
+		http.addFilterBefore(new JwtAuthenticationTokenFilter(jwtTokenUtils),
 				UsernamePasswordAuthenticationFilter.class);
 		// 禁用缓存
 		http.headers().cacheControl();

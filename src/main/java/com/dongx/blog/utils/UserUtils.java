@@ -5,14 +5,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
- * UserUtil
+ * UserUtils
  *
  * @author: dongx
  * Description:
  * Created in: 2018-06-25 21:34
  * Modified by:
  */
-public class UserUtil {
+public class UserUtils {
 	
 	public static JwtUser getUser() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

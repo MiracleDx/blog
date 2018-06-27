@@ -3,14 +3,14 @@ package com.dongx.blog.utils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
- * EncoderUtil
+ * EncoderUtils
  *
  * @author: dongx
  * Description: 密码加密解密工具类
  * Created in: 2018-06-01 10:04
  * Modified by:
  */
-public class EncoderUtil {
+public class EncoderUtils {
 
 	/**
 	 * 对密码进行加密
