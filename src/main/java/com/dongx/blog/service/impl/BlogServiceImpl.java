@@ -73,7 +73,7 @@ public class BlogServiceImpl implements BlogService {
 			Map<String, Object> map = new HashMap<>();
 			map.put("user", userVo);
 			map.put("blog", blogVo);
-			return ServerResponse.createBySuccess(map);
+			return ServerResponse.createBySuccess("查询成功", map);
 		}
 		return ServerResponse.createByError("该博客不存在");
 	}
@@ -81,7 +81,7 @@ public class BlogServiceImpl implements BlogService {
 	@Override
 	public ServerResponse findAll() {
 		
-		List<Blog> blogs = blogRepository.findAllByStatus(CommonStatus.ACTIVE.getCode());
+		List<Blog> blogs = blogRepository.findAllByStatusOrderByCreateTimeDesc(CommonStatus.ACTIVE.getCode());
 		
 		List<BlogVo> blogVos = new ArrayList<>();
 		BlogVo vo = null;
@@ -90,9 +90,6 @@ public class BlogServiceImpl implements BlogService {
 			BeanUtils.copyProperties(blog, vo);
 			blogVos.add(vo);
 		}
-		
-		// 按照发表时间排序
-		blogVos.stream().sorted(Comparator.comparing(BlogVo::getCreateTime).reversed());
 		return ServerResponse.createBySuccess(blogVos);
 	}
 
@@ -185,8 +182,8 @@ public class BlogServiceImpl implements BlogService {
 	}
 
 	@Override
-	public ServerResponse delete(BlogDTO blogDTO) {
-		Blog blog = blogRepository.getOne(blogDTO.getId());
+	public ServerResponse delete(String blogId) {
+		Blog blog = blogRepository.getOne(blogId);
 		blog.setStatus(CommonStatus.UNACTIVE.getCode());
 		Blog result = blogRepository.save(blog);
 		if (result != null) {

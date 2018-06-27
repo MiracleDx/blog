@@ -25,11 +25,6 @@ public class BlogController {
 	@Resource
 	private BlogService blogService;
 	
-	@GetMapping("/findAll")
-	public ServerResponse findAll() {
-		return blogService.findAll();
-	}
-	
 	@GetMapping("/findOne/{id}")
 	public ServerResponse findOne(@PathVariable String id) {
 		return blogService.findOne(id);
@@ -41,9 +36,13 @@ public class BlogController {
 		return blogService.save(blogDTO);
 	}
 
-	@PostMapping("/update")
+	@PutMapping("/update")
 	public ServerResponse update(@RequestBody BlogDTO blogDTO) {
 		return blogService.update(blogDTO);
 	}
 	
+	@DeleteMapping("/delete/{id}")
+	public ServerResponse delete(@PathVariable String id) {
+		return blogService.delete(id);
+	}
 }

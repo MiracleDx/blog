@@ -27,5 +27,5 @@ public interface BlogRepository extends JpaRepository<Blog, String> {
 	 * @param status
 	 * @return
 	 */
-	List<Blog> findAllByStatus(Integer status);
+	List<Blog> findAllByStatusOrderByCreateTimeDesc(Integer status);
 }

@@ -49,8 +49,8 @@ public interface BlogService {
 
 	/**
 	 * 删除博客
-	 * @param blogDTO
+	 * @param blogId
 	 * @return
 	 */
-	ServerResponse delete(BlogDTO blogDTO);
+	ServerResponse delete(String blogId);
 }

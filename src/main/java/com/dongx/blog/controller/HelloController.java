@@ -3,6 +3,7 @@ package com.dongx.blog.controller;
 import com.dongx.blog.entity.User;
 import com.dongx.blog.resposity.UserRepository;
 import com.dongx.blog.security.JwtUser;
+import com.dongx.blog.service.BlogService;
 import com.dongx.blog.service.UserService;
 import com.dongx.blog.sys.ServerResponse;
 import com.dongx.blog.vo.Msg;
@@ -44,6 +45,9 @@ public class HelloController {
 
 	@Resource
 	private UserService userService;
+	
+	@Resource
+	private BlogService blogService;
 
 	@RequestMapping(value = "/auth", method = RequestMethod.POST)
 	public JwtUser auth() {
@@ -63,5 +67,10 @@ public class HelloController {
 	@PostMapping("/register")
 	public ServerResponse register(@RequestBody User user, HttpServletRequest request) {
 		return userService.save(user, request);
+	}
+
+	@GetMapping("/findAllBlog")
+	public ServerResponse findAllBlog() {
+		return blogService.findAll();
 	}
 }
