@@ -12,7 +12,7 @@ import com.dongx.blog.security.JwtUser;
 import com.dongx.blog.service.BlogService;
 import com.dongx.blog.sys.ServerResponse;
 import com.dongx.blog.utils.FtpUtils;
-import com.dongx.blog.utils.GeneratorKeyUtils;
+import com.dongx.blog.utils.KeyGeneratorUtils;
 import com.dongx.blog.utils.UserUtils;
 import com.dongx.blog.vo.BlogVo;
 import com.dongx.blog.vo.UserVo;
@@ -139,7 +139,7 @@ public class BlogServiceImpl implements BlogService {
 				return ServerResponse.createBySuccess("更新成功", vo);
 			}
 		}
-		return ServerResponse.createByError("更新失败");
+		return ServerResponse.createByError("更新失败， 请联系管理员");
 	}
 
 	@Override
@@ -161,7 +161,7 @@ public class BlogServiceImpl implements BlogService {
 			BeanUtils.copyProperties(blogDTO, blog);
 			
 			Date now = Date.from(Instant.now());
-			blog.setId(GeneratorKeyUtils.getInstance().generatorKey("blog"));
+			blog.setId(KeyGeneratorUtils.getInstance().generatorKey("blog"));
 			blog.setAddress(resultMap.get("filePath"));
 			blog.setFilename(resultMap.get("fileName"));
 			blog.setCreateUser(user.getId());
@@ -178,7 +178,7 @@ public class BlogServiceImpl implements BlogService {
 				return ServerResponse.createBySuccess("保存成功", vo);
 			}
 		} 
-		return ServerResponse.createByError("保存失败");
+		return ServerResponse.createByError("保存失败， 请联系管理员");
 	}
 
 	@Override
@@ -189,7 +189,7 @@ public class BlogServiceImpl implements BlogService {
 		if (result != null) {
 			return ServerResponse.createBySuccess("删除成功");
 		}
-		return ServerResponse.createByError("删除失败");
+		return ServerResponse.createByError("删除失败， 请联系管理员");
 	}
 	
 	/**

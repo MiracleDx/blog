@@ -12,8 +12,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import java.nio.file.Path;
 
 @SpringBootApplication
-@EnableAutoConfiguration    
-@ComponentScan
 @EnableTransactionManagement
 @MapperScan("com.dongx.blog.mapper")
 @Slf4j

@@ -85,7 +85,7 @@ public class UserSerivceImpl implements UserService {
 		String newPassword = EncoderUtils.PasswordEncoder(password);
 		
 		// 获取主键
-		String userId = GeneratorKeyUtils.getInstance().generatorKey();
+		String userId = KeyGeneratorUtils.getInstance().generatorKey();
 		
 		// 存入用户
 		user.setId(userId);

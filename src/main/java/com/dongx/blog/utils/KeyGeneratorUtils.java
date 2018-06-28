@@ -4,22 +4,22 @@ import java.security.SecureRandom;
 import java.util.UUID;
 
 /**
- * GeneratorKeyUtils
+ * KeyGeneratorUtils
  *
  * @author: dongx
  * Description: 随机主键生成器工具类
  * Created in: 2018-05-21 20:19
  * Modified by:
  */
-public class GeneratorKeyUtils {
+public class KeyGeneratorUtils {
 
-	private static GeneratorKeyUtils instance;
+	private static KeyGeneratorUtils instance;
 	
-	public static GeneratorKeyUtils getInstance() {
+	public static KeyGeneratorUtils getInstance() {
 		if (instance == null) {
-			synchronized (GeneratorKeyUtils.class) {
+			synchronized (KeyGeneratorUtils.class) {
 				if (instance == null) {
-					instance = new GeneratorKeyUtils();
+					instance = new KeyGeneratorUtils();
 				}
 			}
 		}
