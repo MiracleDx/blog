@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dongx.blog.mapper.CommentMapper">
+  <resultMap id="BaseResultMap" type="com.dongx.blog.entity.Comment">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="blog_id" jdbcType="VARCHAR" property="blogId" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="floor" jdbcType="INTEGER" property="floor" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_ip" jdbcType="VARCHAR" property="createIp" />
+    <result column="reply_user_id" jdbcType="VARCHAR" property="replyUserId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="pid" jdbcType="VARCHAR" property="pid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, blog_id, content, floor, create_user, create_time, create_ip, reply_user_id, status, 
+    pid
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from blog_comment
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from blog_comment
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.dongx.blog.entity.Comment">
+    insert into blog_comment (id, blog_id, content, 
+      floor, create_user, create_time, 
+      create_ip, reply_user_id, status, 
+      pid)
+    values (#{id,jdbcType=VARCHAR}, #{blogId,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, 
+      #{floor,jdbcType=INTEGER}, #{createUser,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{createIp,jdbcType=VARCHAR}, #{replyUserId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
+      #{pid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.dongx.blog.entity.Comment">
+    insert into blog_comment
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="blogId != null">
+        blog_id,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="floor != null">
+        floor,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createIp != null">
+        create_ip,
+      </if>
+      <if test="replyUserId != null">
+        reply_user_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="pid != null">
+        pid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="blogId != null">
+        #{blogId,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="floor != null">
+        #{floor,jdbcType=INTEGER},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createIp != null">
+        #{createIp,jdbcType=VARCHAR},
+      </if>
+      <if test="replyUserId != null">
+        #{replyUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="pid != null">
+        #{pid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dongx.blog.entity.Comment">
+    update blog_comment
+    <set>
+      <if test="blogId != null">
+        blog_id = #{blogId,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="floor != null">
+        floor = #{floor,jdbcType=INTEGER},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createIp != null">
+        create_ip = #{createIp,jdbcType=VARCHAR},
+      </if>
+      <if test="replyUserId != null">
+        reply_user_id = #{replyUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="pid != null">
+        pid = #{pid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dongx.blog.entity.Comment">
+    update blog_comment
+    set blog_id = #{blogId,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      floor = #{floor,jdbcType=INTEGER},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_ip = #{createIp,jdbcType=VARCHAR},
+      reply_user_id = #{replyUserId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      pid = #{pid,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <select id="findAllByBlogIdAndStatusOrderByFloorAsc" parameterType="java.util.Map" resultMap="findAllByBlogIdAndStatusOrderByFloorAscRes">
+    select
+      c.id, c.blog_id, c.content, c.floor, c.create_user, c.create_time, c.create_ip, c.status, c.pid, c.reply_user_id,
+      (select username from blog_user us where us.id = c.reply_user_id) as reply_username,
+      (select nickname from blog_user_info ui where ui.user_id = c.reply_user_id) as reply_nickname, 
+      u.username,
+      i.nickname,
+      i.avatar
+    from
+      blog_comment c
+    left join
+      blog_user u
+    on
+      c.create_user = u.id
+    left join
+      blog_user_info i
+    on
+     u.id = i.user_id
+    where
+      c.blog_id = #{blogId, jdbcType=VARCHAR}
+    and
+      c.status = #{status, jdbcType=INTEGER}
+    order by
+      floor 
+    asc
+  </select>
+  <resultMap id="findAllByBlogIdAndStatusOrderByFloorAscRes" type="com.dongx.blog.vo.CommentVo">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="blog_id" jdbcType="VARCHAR" property="blogId" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="floor" jdbcType="INTEGER" property="floor" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_ip" jdbcType="VARCHAR" property="createIp" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="pid" jdbcType="VARCHAR" property="pid" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+    <result column="avatar" jdbcType="VARCHAR" property="avatar" />
+    <result column="reply_username" jdbcType="VARCHAR" property="replyUsername" />
+    <result column="reply_nickname" jdbcType="VARCHAR" property="replyNickname" />
+  </resultMap>
+
+  <select id="findMaxFloorByBlogId" parameterType="java.util.Map" resultType="integer">
+    select
+      max(floor) + 1
+    from
+      blog_comment
+    where
+      blog_id = #{blogId, jdbcType=VARCHAR}
+      <choose>
+        <when test="commentId != null and commentId != '' ">
+          and pid = #{commentId, jdbcType=VARCHAR}
+        </when>
+        <otherwise>
+          and pid is null
+        </otherwise>
+      </choose>
+  </select>
+</mapper>

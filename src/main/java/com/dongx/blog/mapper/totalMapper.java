@@ -1,17 +1,17 @@
 package com.dongx.blog.mapper;
 
-import com.dongx.blog.entity.total;
+import com.dongx.blog.entity.Total;
 
-public interface totalMapper {
+public interface TotalMapper {
     int deleteByPrimaryKey(Integer id);
 
-    int insert(total record);
+    int insert(Total record);
 
-    int insertSelective(total record);
+    int insertSelective(Total record);
 
-    total selectByPrimaryKey(Integer id);
+    Total selectByPrimaryKey(Integer id);
 
-    int updateByPrimaryKeySelective(total record);
+    int updateByPrimaryKeySelective(Total record);
 
-    int updateByPrimaryKey(total record);
+    int updateByPrimaryKey(Total record);
 }
