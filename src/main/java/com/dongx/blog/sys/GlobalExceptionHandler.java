@@ -16,19 +16,19 @@ import javax.servlet.http.HttpServletRequest;
  * Created in: 2018-05-13 10:40
  * Modified by:
  */
-@ControllerAdvice
+/*@ControllerAdvice
 public class GlobalExceptionHandler {
 	
 	// 发生异常跳转的页面
 	public static final String DEFAULT_ERROR_VIEW = "error";
 
-	/**
+	*//**
 	 * 异常处理
 	 * @param request
 	 * @param e
 	 * @return
 	 * @throws Exception
-	 */
+	 *//*
 	@ExceptionHandler(value = Exception.class)
 	public Object ErrorHandler(HttpServletRequest request, Exception e) throws Exception {
 		if (isAjax(request)) {
@@ -38,13 +38,13 @@ public class GlobalExceptionHandler {
 		}
 	}
 
-	/**
+	*//**
 	 * 默认请求的异常处理
 	 * @param request
 	 * @param e
 	 * @return
 	 * @throws Exception
-	 */
+	 *//*
 	public ModelAndView defaultErrorHandler(HttpServletRequest request, Exception e) throws Exception {
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("exception", e);
@@ -54,13 +54,13 @@ public class GlobalExceptionHandler {
 	}
 
 
-	/**
+	*//**
 	 * ajax请求的异常处理
 	 * @param request
 	 * @param e
 	 * @return
 	 * @throws Exception
-	 */
+	 *//*
 	public ServerResponse<String> jsonErrorHandler(HttpServletRequest request, Exception e) throws Exception {
 		ServerResponse<String> sr = new ServerResponse<>();
 		sr.setMessage(e.getMessage());
@@ -70,11 +70,11 @@ public class GlobalExceptionHandler {
 	}
 
 
-	/**
+	*//**
 	 * 判断是否是ajax请求
 	 * @param request
 	 * @return
-	 */
+	 *//*
 	public boolean isAjax(HttpServletRequest request) {
 		boolean flag;
 		if (request.getHeader("X-Requested-With") != null 
@@ -85,4 +85,4 @@ public class GlobalExceptionHandler {
 		}
 		return flag;
 	}
-}
+}*/

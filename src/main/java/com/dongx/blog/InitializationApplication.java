@@ -20,6 +20,6 @@ public class InitializationApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(InitializationApplication.class, args);
-		log.info("\n\t==================>project start success<==================");
+		log.info("------------------------>project start success<------------------------");
 	}
 }

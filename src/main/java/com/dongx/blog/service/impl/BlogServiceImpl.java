@@ -3,15 +3,19 @@ package com.dongx.blog.service.impl;
 import com.dongx.blog.common.CommonStatus;
 import com.dongx.blog.dto.BlogDTO;
 import com.dongx.blog.entity.Blog;
+import com.dongx.blog.entity.TotalCount;
 import com.dongx.blog.entity.User;
 import com.dongx.blog.entity.UserInfo;
+import com.dongx.blog.mapper.TotalCountMapper;
 import com.dongx.blog.resposity.BlogRepository;
+import com.dongx.blog.resposity.CommentRepository;
 import com.dongx.blog.resposity.UserInfoRepository;
 import com.dongx.blog.resposity.UserRepository;
 import com.dongx.blog.security.JwtUser;
 import com.dongx.blog.service.BlogService;
 import com.dongx.blog.sys.ServerResponse;
 import com.dongx.blog.utils.FtpUtils;
+import com.dongx.blog.utils.IpUtils;
 import com.dongx.blog.utils.KeyGeneratorUtils;
 import com.dongx.blog.utils.UserUtils;
 import com.dongx.blog.vo.BlogVo;
@@ -23,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.util.*;
 
@@ -46,6 +51,12 @@ public class BlogServiceImpl implements BlogService {
 	
 	@Resource
 	private UserInfoRepository userInfoRepository;
+	
+	@Resource
+	private CommentRepository commentRepository;
+	
+	@Resource
+	private TotalCountMapper totalCountMapper;
 
 	@Override
 	public ServerResponse findOne(String blogId) {
@@ -100,7 +111,7 @@ public class BlogServiceImpl implements BlogService {
 
 	@Override
 	@Transactional
-	public ServerResponse update(BlogDTO blogDTO) {
+	public ServerResponse update(BlogDTO blogDTO, HttpServletRequest request) {
 		
 		JwtUser user = UserUtils.getUser();
 		
@@ -125,11 +136,13 @@ public class BlogServiceImpl implements BlogService {
 			Blog blog = new Blog();
 			BeanUtils.copyProperties(blogDTO, blog);
 			Date now = Date.from(Instant.now());
+			String ip = IpUtils.getIpAddr(request);
 			
 			blog.setAddress(resultMap.get("filePath"));
 			blog.setFilename(resultMap.get("fileName"));
 			blog.setUpdateUser(user.getId());
 			blog.setUpdateTime(now);
+			blog.setUpdateIp(ip);
 			Blog result = blogRepository.save(blog);
 			if (result != null) {
 				BlogVo vo = new BlogVo();
@@ -144,7 +157,7 @@ public class BlogServiceImpl implements BlogService {
 
 	@Override
 	@Transactional
-	public ServerResponse save(BlogDTO blogDTO) {
+	public ServerResponse save(BlogDTO blogDTO, HttpServletRequest request) {
 		JwtUser user = UserUtils.getUser();
 		
 		if (blogDTO == null) {
@@ -159,6 +172,7 @@ public class BlogServiceImpl implements BlogService {
 		if (resultMap != null) {
 			Blog blog = new Blog();
 			BeanUtils.copyProperties(blogDTO, blog);
+			String ip = IpUtils.getIpAddr(request);
 			
 			Date now = Date.from(Instant.now());
 			blog.setId(KeyGeneratorUtils.getInstance().generatorKey("blog"));
@@ -166,11 +180,17 @@ public class BlogServiceImpl implements BlogService {
 			blog.setFilename(resultMap.get("fileName"));
 			blog.setCreateUser(user.getId());
 			blog.setCreateTime(now);
+			blog.setCreateIp(ip);
 			blog.setUpdateUser(user.getId());
 			blog.setUpdateTime(now);
+			blog.setUpdateIp(ip);
 			blog.setStatus(CommonStatus.ACTIVE.getCode());
 			Blog result = blogRepository.save(blog);
 			if (result != null) {
+				// 增加点赞评论数量表记录
+				TotalCount totalCount = new TotalCount();
+				totalCount.setBlogId(result.getId());
+				totalCountMapper.insertSelective(totalCount);
 				BlogVo vo = new BlogVo();
 				BeanUtils.copyProperties(result, vo);
 				vo.setContent(content);
@@ -182,10 +202,16 @@ public class BlogServiceImpl implements BlogService {
 	}
 
 	@Override
+	@Transactional
 	public ServerResponse delete(String blogId) {
+		if (StringUtils.isEmpty(blogId)) {
+			return null;
+		}
+		
 		Blog blog = blogRepository.getOne(blogId);
 		blog.setStatus(CommonStatus.UNACTIVE.getCode());
 		Blog result = blogRepository.save(blog);
+		commentRepository.deleteByBlogId(blogId);
 		if (result != null) {
 			return ServerResponse.createBySuccess("删除成功");
 		}

@@ -29,9 +29,13 @@ public class BlogVo {
 
 	private Date createTime;
 
+	private String createIp;
+
 	private String updateUser;
 
 	private Date updateTime;
+	
+	private String updateIp;
 
 	private Integer status;
 }

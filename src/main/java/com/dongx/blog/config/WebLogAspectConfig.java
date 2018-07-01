@@ -32,7 +32,7 @@ public class WebLogAspectConfig {
 	public void webLog() {}
 	
 	@Before("webLog()")
-	public void doBefor(JoinPoint joinPoint) throws Throwable {
+	public void doBefore(JoinPoint joinPoint) throws Throwable {
 		startTime.set(System.currentTimeMillis());
 		
 		// 接收到请求，记录请求内容

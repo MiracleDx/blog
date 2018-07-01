@@ -3,6 +3,8 @@ package com.dongx.blog.service;
 import com.dongx.blog.dto.BlogDTO;
 import com.dongx.blog.sys.ServerResponse;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * BlogService
  *
@@ -38,14 +40,14 @@ public interface BlogService {
 	 * @param blogDTO
 	 * @return
 	 */
-	ServerResponse update(BlogDTO blogDTO);
+	ServerResponse update(BlogDTO blogDTO, HttpServletRequest request);
 
 	/**
 	 * 保存博客
 	 * @param blogDTO
 	 * @return
 	 */
-	ServerResponse save(BlogDTO blogDTO);
+	ServerResponse save(BlogDTO blogDTO, HttpServletRequest request);
 
 	/**
 	 * 删除博客

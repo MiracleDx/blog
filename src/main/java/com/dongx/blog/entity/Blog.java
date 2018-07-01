@@ -27,9 +27,13 @@ public class Blog implements Serializable {
 
     private Date createTime;
 
+    private String createIp;
+
     private String updateUser;
 
     private Date updateTime;
+
+    private String updateIp;
 
     private Integer status;
 
@@ -99,6 +103,14 @@ public class Blog implements Serializable {
         this.createTime = createTime;
     }
 
+    public String getCreateIp() {
+        return createIp;
+    }
+
+    public void setCreateIp(String createIp) {
+        this.createIp = createIp == null ? null : createIp.trim();
+    }
+
     public String getUpdateUser() {
         return updateUser;
     }
@@ -113,6 +125,14 @@ public class Blog implements Serializable {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getUpdateIp() {
+        return updateIp;
+    }
+
+    public void setUpdateIp(String updateIp) {
+        this.updateIp = updateIp == null ? null : updateIp.trim();
     }
 
     public Integer getStatus() {
@@ -134,8 +154,10 @@ public class Blog implements Serializable {
                 ", filename='" + filename + '\'' +
                 ", createUser='" + createUser + '\'' +
                 ", createTime=" + createTime +
+                ", createIp='" + createIp + '\'' +
                 ", updateUser='" + updateUser + '\'' +
                 ", updateTime=" + updateTime +
+                ", updateIp='" + updateIp + '\'' +
                 ", status=" + status +
                 '}';
     }

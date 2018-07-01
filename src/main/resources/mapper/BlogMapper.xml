@@ -10,13 +10,15 @@
     <result column="filename" jdbcType="VARCHAR" property="filename" />
     <result column="create_user" jdbcType="VARCHAR" property="createUser" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_ip" jdbcType="VARCHAR" property="createIp" />
     <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_ip" jdbcType="VARCHAR" property="updateIp" />
     <result column="status" jdbcType="INTEGER" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, title, description, category, address, filename, create_user, create_time, update_user, 
-    update_time, status
+    id, title, description, category, address, filename, create_user, create_time, create_ip, 
+    update_user, update_time, update_ip, status
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -31,12 +33,14 @@
   <insert id="insert" parameterType="com.dongx.blog.entity.Blog">
     insert into blog_blog (id, title, description, 
       category, address, filename, 
-      create_user, create_time, update_user, 
-      update_time, status)
+      create_user, create_time, create_ip, 
+      update_user, update_time, update_ip, 
+      status)
     values (#{id,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
       #{category,jdbcType=INTEGER}, #{address,jdbcType=VARCHAR}, #{filename,jdbcType=VARCHAR}, 
-      #{createUser,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER})
+      #{createUser,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{createIp,jdbcType=VARCHAR}, 
+      #{updateUser,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{updateIp,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.dongx.blog.entity.Blog">
     insert into blog_blog
@@ -65,11 +69,17 @@
       <if test="createTime != null">
         create_time,
       </if>
+      <if test="createIp != null">
+        create_ip,
+      </if>
       <if test="updateUser != null">
         update_user,
       </if>
       <if test="updateTime != null">
         update_time,
+      </if>
+      <if test="updateIp != null">
+        update_ip,
       </if>
       <if test="status != null">
         status,
@@ -100,11 +110,17 @@
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="createIp != null">
+        #{createIp,jdbcType=VARCHAR},
+      </if>
       <if test="updateUser != null">
         #{updateUser,jdbcType=VARCHAR},
       </if>
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateIp != null">
+        #{updateIp,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
         #{status,jdbcType=INTEGER},
@@ -135,11 +151,17 @@
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="createIp != null">
+        create_ip = #{createIp,jdbcType=VARCHAR},
+      </if>
       <if test="updateUser != null">
         update_user = #{updateUser,jdbcType=VARCHAR},
       </if>
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateIp != null">
+        update_ip = #{updateIp,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
         status = #{status,jdbcType=INTEGER},
@@ -156,8 +178,10 @@
       filename = #{filename,jdbcType=VARCHAR},
       create_user = #{createUser,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_ip = #{createIp,jdbcType=VARCHAR},
       update_user = #{updateUser,jdbcType=VARCHAR},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_ip = #{updateIp,jdbcType=VARCHAR},
       status = #{status,jdbcType=INTEGER}
     where id = #{id,jdbcType=VARCHAR}
   </update>

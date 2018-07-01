@@ -22,20 +22,28 @@ public class CommentVo {
 	private String blogId;
 
 	private String content;
+	
+	private Integer floor;
 
 	private String createUser;
 
 	private Date createTime;
 
+	private String createIp;
+
 	private Integer status;
 
 	private String pid;
-
+	
 	private String username;
 
 	private String nickname;
-
+	
 	private String avatar;
+	
+	private String replyUsername;
+	
+	private String replyNickname;
 
-	private List<CommentDTO> children;
+	private List<CommentVo> children;
 }

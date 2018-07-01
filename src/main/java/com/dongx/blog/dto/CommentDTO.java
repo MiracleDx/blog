@@ -22,9 +22,15 @@ public class CommentDTO {
 
 	private String content;
 
+	private Integer floor;
+
 	private String createUser;
 
 	private Date createTime;
+	
+	private String createIp;
+	
+	private String replyUserId;
 
 	private Integer status;
 

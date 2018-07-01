@@ -86,5 +86,8 @@
                 enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"/>
          <table tableName="blog_total" domainObjectName="total" enableCountByExample="false"
                 enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"/>-->
+        
+        <table tableName="blog_total_count" domainObjectName="TotalCount" enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"/>
     </context>
 </generatorConfiguration>  

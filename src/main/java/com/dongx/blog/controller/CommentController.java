@@ -32,4 +32,9 @@ public class CommentController {
 	public ServerResponse findAllByBlogId(@PathVariable String blogId) {
 		return commentService.findAllByBlogId(blogId);
 	}
+	
+	@DeleteMapping("/deleteByCommentId/{commentId}")
+	public ServerResponse deleteByCommentId(@PathVariable String commentId) {
+		return commentService.deleteByCommentId(commentId);
+	}
 }

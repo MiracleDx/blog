@@ -2,6 +2,9 @@ package com.dongx.blog.resposity;
 
 import com.dongx.blog.entity.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -39,4 +42,22 @@ public interface CommentRepository extends JpaRepository<Comment, String> {
 	 * @return
 	 */
 	List<Comment> findAllByCreateUserAndStatus(String createuserId, Integer status);
+
+	/**
+	 * 该博客下的所有评论假删除
+	 * @param blogId
+	 * @return
+	 */
+	@Query(value = "update blog_comment set status = 0 where blog_id = :blogId", nativeQuery = true)
+	@Modifying
+	Integer deleteByBlogId(@Param("blogId") String blogId);
+
+	/**
+	 * 该评论下的所有评论假删除
+	 * @param pid
+	 * @return
+	 */
+	@Query(value = "update blog_comment set status = 0 where pid = :pid", nativeQuery = true)
+	@Modifying
+	Integer deleteByPid(@Param("pid") String pid);
 }

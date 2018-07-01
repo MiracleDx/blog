@@ -1,6 +1,11 @@
 package com.dongx.blog.mapper;
 
 import com.dongx.blog.entity.Comment;
+import com.dongx.blog.vo.CommentVo;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
 
 public interface CommentMapper {
     int deleteByPrimaryKey(String id);
@@ -14,4 +19,8 @@ public interface CommentMapper {
     int updateByPrimaryKeySelective(Comment record);
 
     int updateByPrimaryKey(Comment record);
+
+    List<CommentVo> findAllByBlogIdAndStatusOrderByFloorAsc(Map<String, Object> map);
+
+    Integer findMaxFloorByBlogId(Map<String, Object> map);
 }

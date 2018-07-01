@@ -28,4 +28,7 @@ public interface CommentService {
 	 * @return
 	 */
 	ServerResponse findAllByBlogId(String blogId);
+
+
+	ServerResponse deleteByCommentId(String commentId);
 }

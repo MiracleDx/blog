@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * BlogController
@@ -32,13 +33,13 @@ public class BlogController {
 	
 	
 	@PostMapping("/save")
-	public ServerResponse save(@RequestBody BlogDTO blogDTO) {
-		return blogService.save(blogDTO);
+	public ServerResponse save(@RequestBody BlogDTO blogDTO, HttpServletRequest request) {
+		return blogService.save(blogDTO, request);
 	}
 
 	@PutMapping("/update")
-	public ServerResponse update(@RequestBody BlogDTO blogDTO) {
-		return blogService.update(blogDTO);
+	public ServerResponse update(@RequestBody BlogDTO blogDTO, HttpServletRequest request) {
+		return blogService.update(blogDTO, request);
 	}
 	
 	@DeleteMapping("/delete/{id}")

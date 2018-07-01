@@ -5,12 +5,14 @@ import com.dongx.blog.dto.CommentDTO;
 import com.dongx.blog.entity.Comment;
 import com.dongx.blog.entity.User;
 import com.dongx.blog.entity.UserInfo;
+import com.dongx.blog.mapper.CommentMapper;
 import com.dongx.blog.resposity.CommentRepository;
 import com.dongx.blog.resposity.UserInfoRepository;
 import com.dongx.blog.resposity.UserRepository;
 import com.dongx.blog.security.JwtUser;
 import com.dongx.blog.service.CommentService;
 import com.dongx.blog.sys.ServerResponse;
+import com.dongx.blog.utils.IpUtils;
 import com.dongx.blog.utils.KeyGeneratorUtils;
 import com.dongx.blog.utils.UserUtils;
 import com.dongx.blog.vo.CommentVo;
@@ -19,15 +21,15 @@ import org.apache.catalina.Server;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * CommentServiceImpl
@@ -50,6 +52,9 @@ public class CommentServiceImpl implements CommentService {
 	@Resource
 	private UserInfoRepository userInfoRepository;
 	
+	@Resource
+	private CommentMapper commentMapper;
+	
 	@Override
 	public ServerResponse save(CommentDTO commentDTO, HttpServletRequest request) {
 
@@ -59,12 +64,31 @@ public class CommentServiceImpl implements CommentService {
 			return null;
 		}
 		
+		String ip = IpUtils.getIpAddr(request);
 		Comment comment = new Comment();
 		BeanUtils.copyProperties(commentDTO, comment);
+		
+		// 如果是一级评论增加楼号
+		Integer floor = null;
+		Map<String, Object> map = new HashMap<>();
+		map.put("blogId", commentDTO.getBlogId());
+		if (StringUtils.isNotEmpty(commentDTO.getPid())) {
+			map.put("commentId", commentDTO.getPid());
+		}
+		floor = commentMapper.findMaxFloorByBlogId(map);
+		
 		comment.setId(KeyGeneratorUtils.getInstance().generatorKey("comment"));
+		comment.setFloor(floor == null ? 1 : floor);
 		comment.setCreateTime(Date.from(Instant.now()));
 		comment.setCreateUser(user.getId());
+		comment.setCreateIp(ip);
 		comment.setStatus(CommonStatus.ACTIVE.getCode());
+		
+		// 回复自己 不记录回复人
+		if (StringUtils.equals(comment.getReplyUserId(), user.getId())) {
+			comment.setReplyUserId(null);
+		}
+		
 		Comment result = commentRepository.save(comment);
 		
 		if (result != null) {
@@ -81,42 +105,55 @@ public class CommentServiceImpl implements CommentService {
 		if (StringUtils.isEmpty(blogId)) {
 			return null;	
 		}
-
-		// 查询所有评论
-		List<Comment> comments = commentRepository.findAllByBlogIdAndStatusOrderByCreateTimeAsc(blogId, CommonStatus.ACTIVE.getCode());
-		CommentVo vo = null;
-		List<CommentVo> vos = new ArrayList<>();
-		User user = null;
-		UserInfo userInfo = null;
+		
 		String defaultAvatar = "/static/images/avatars/user2.jpg";
-		for (Comment comment : comments) {
-			vo = new CommentVo();
-			BeanUtils.copyProperties(comment, vo);
-			user = userRepository.getOne(comment.getCreateUser());
-			userInfo = userInfoRepository.findUserInfoByUserId(user.getId());
-			vo.setUsername(user.getUsername());
-			vo.setNickname(userInfo.getNickname());
-			if (StringUtils.isEmpty(userInfo.getAvatar())) {
-				vo.setAvatar(defaultAvatar);
-			} else {
-				vo.setAvatar(userInfo.getAvatar());
+		Map<String, Object> map = new HashMap<>();
+		map.put("blogId", blogId);
+		map.put("status", CommonStatus.ACTIVE.getCode());
+		List<CommentVo> vos = commentMapper.findAllByBlogIdAndStatusOrderByFloorAsc(map);
+		vos.forEach(e -> {
+			if (StringUtils.isEmpty(e.getAvatar())) {
+				e.setAvatar(defaultAvatar);
 			}
-			vos.add(vo);
-		}
+		});
+		
+		List<CommentVo> newVos = this.findchildren(vos);
+		
+		log.info("查询博客下所有评论成功: {}", blogId);
+		return ServerResponse.createBySuccess(newVos);
+	}
 
-		return ServerResponse.createBySuccess(vos);
+	private List<CommentVo> findchildren(List<CommentVo> vos) {
+		
+		List<CommentVo> fathers = vos.stream().filter(e -> StringUtils.isEmpty(e.getPid())).collect(Collectors.toList());
+		List<CommentVo> childs = vos.stream().filter(e -> StringUtils.isNotEmpty(e.getPid())).collect(Collectors.toList());
+
+		fathers.forEach(f -> {
+			List<CommentVo> children = new ArrayList<>();
+			childs.forEach(c -> {
+				if (StringUtils.equals(f.getId(), c.getPid())) {
+					children.add(c);
+				}
+			});
+			f.setChildren(children);
+		});
+	
+		return fathers;
 	}
 	
-	public ServerResponse deleteByCommentId(CommentDTO commentDTO) {
+
+	@Override
+	@Transactional
+	public ServerResponse deleteByCommentId(String commentId) {
 		
-		if (commentDTO == null) {
+		if (StringUtils.isEmpty(commentId)) {
 			return null;
 		}
-
-		Comment comment = new Comment();
-		BeanUtils.copyProperties(commentDTO, comment);
+		
+		Comment comment = commentRepository.getOne(commentId);
 		comment.setStatus(CommonStatus.UNACTIVE.getCode());
 		Comment result = commentRepository.save(comment);
+		commentRepository.deleteByPid(result.getId());
 		
 		if (result != null) {
 			log.info("评论删除成功: {}", comment.getId());
@@ -127,12 +164,5 @@ public class CommentServiceImpl implements CommentService {
 		return ServerResponse.createByError("评论删除失败");
 	}
 	
-	public ServerResponse findByBlogIdAndCreateUser(String BlogId, String createuserId) {
-		return ServerResponse.createBySuccess(commentRepository.findAllByBlogIdAndCreateUserAndStatus(BlogId, createuserId, CommonStatus.ACTIVE.getCode()));
-	}
-	
-	public ServerResponse findByCreateUser(String createuserId) {
-		return ServerResponse.createBySuccess(commentRepository.findAllByCreateUserAndStatus(createuserId, CommonStatus.ACTIVE.getCode()));
-	}
-	
 }
+
