@@ -4,6 +4,7 @@ import com.dongx.blog.dto.BlogDTO;
 import com.dongx.blog.service.BlogService;
 import com.dongx.blog.sys.ServerResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.Server;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -45,5 +46,10 @@ public class BlogController {
 	@DeleteMapping("/delete/{id}")
 	public ServerResponse delete(@PathVariable String id) {
 		return blogService.delete(id);
+	}
+	
+	@GetMapping("/findAllByUserId")
+	public ServerResponse findAllByUserId() {
+		return blogService.findAllByUserId();
 	}
 }

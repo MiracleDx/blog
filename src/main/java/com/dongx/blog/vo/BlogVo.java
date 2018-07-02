@@ -38,4 +38,6 @@ public class BlogVo {
 	private String updateIp;
 
 	private Integer status;
+	
+	private Integer isLike;
 }

@@ -1,6 +1,7 @@
 package com.dongx.blog.service;
 
 import com.dongx.blog.entity.TotalCount;
+import com.dongx.blog.sys.ServerResponse;
 
 /**
  * TotalService
@@ -18,7 +19,7 @@ public interface TotalService {
 	 * @param blogId
 	 * @return
 	 */
-	void addStatus(String userId, String blogId);
+	ServerResponse addStatus(String blogId);
 
 	/**
 	 * 取消点赞
@@ -26,23 +27,8 @@ public interface TotalService {
 	 * @param blogId
 	 * @return
 	 */
-	void cancelStatus(String userId, String blogId);
-
-	/**
-	 * 增加点赞总数
-	 * @param blogId
-	 * @return
-	 */
-	void addLikeCount(String blogId);
-
-	/**
-	 * 减少点赞总数
-	 * @param blogId
-	 * @return
-	 */
-	void decLikeCount(String blogId);
-
-
+	ServerResponse cancelStatus(String blogId);
+	
 	/**
 	 * 增加评论数
 	 * @param blogId

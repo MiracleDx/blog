@@ -146,11 +146,16 @@ public class CommentServiceImpl implements CommentService {
 	@Transactional
 	public ServerResponse deleteByCommentId(String commentId) {
 		
+		JwtUser user = UserUtils.getUser();
+		
 		if (StringUtils.isEmpty(commentId)) {
 			return null;
 		}
 		
 		Comment comment = commentRepository.getOne(commentId);
+		if (!StringUtils.equals(user.getId(), comment.getCreateUser())) {
+			return ServerResponse.createByError("没有权限进行该操作");
+		}
 		comment.setStatus(CommonStatus.UNACTIVE.getCode());
 		Comment result = commentRepository.save(comment);
 		commentRepository.deleteByPid(result.getId());

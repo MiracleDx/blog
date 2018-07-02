@@ -28,4 +28,12 @@ public interface BlogRepository extends JpaRepository<Blog, String> {
 	 * @return
 	 */
 	List<Blog> findAllByStatusOrderByCreateTimeDesc(Integer status);
+
+	/**
+	 * 查询该用户所有博客
+	 * @param userId
+	 * @param status
+	 * @return
+	 */
+	List<Blog> findAllByCreateUserAndStatusOrderByCreateTimeDesc(String userId, Integer status);
 }

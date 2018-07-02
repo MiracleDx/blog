@@ -1,16 +1,11 @@
 package com.dongx.blog.service.impl;
 
 import com.dongx.blog.common.CommonStatus;
+import com.dongx.blog.common.TotalStatusEnum;
 import com.dongx.blog.dto.BlogDTO;
-import com.dongx.blog.entity.Blog;
-import com.dongx.blog.entity.TotalCount;
-import com.dongx.blog.entity.User;
-import com.dongx.blog.entity.UserInfo;
+import com.dongx.blog.entity.*;
 import com.dongx.blog.mapper.TotalCountMapper;
-import com.dongx.blog.resposity.BlogRepository;
-import com.dongx.blog.resposity.CommentRepository;
-import com.dongx.blog.resposity.UserInfoRepository;
-import com.dongx.blog.resposity.UserRepository;
+import com.dongx.blog.resposity.*;
 import com.dongx.blog.security.JwtUser;
 import com.dongx.blog.service.BlogService;
 import com.dongx.blog.sys.ServerResponse;
@@ -57,6 +52,9 @@ public class BlogServiceImpl implements BlogService {
 	
 	@Resource
 	private TotalCountMapper totalCountMapper;
+	
+	@Resource
+	private TotalRepository totalRepository;
 
 	@Override
 	public ServerResponse findOne(String blogId) {
@@ -81,6 +79,12 @@ public class BlogServiceImpl implements BlogService {
 			BlogVo blogVo = new BlogVo();
 			BeanUtils.copyProperties(blog, blogVo);
 			blogVo.setContent(this.readFile(blog.getAddress(), blog.getFilename()));
+			Total total = totalRepository.findByUserIdAndBlogId(user.getId(), blogId);
+			if (total.getStatus() == TotalStatusEnum.CONFIRM.getCode()) {
+				blogVo.setIsLike(1);
+			} else {
+				blogVo.setIsLike(0);
+			}
 			Map<String, Object> map = new HashMap<>();
 			map.put("user", userVo);
 			map.put("blog", blogVo);
@@ -101,7 +105,7 @@ public class BlogServiceImpl implements BlogService {
 			BeanUtils.copyProperties(blog, vo);
 			blogVos.add(vo);
 		}
-		return ServerResponse.createBySuccess(blogVos);
+		return ServerResponse.createBySuccess("查询成功", blogVos);
 	}
 
 	@Override
@@ -204,11 +208,18 @@ public class BlogServiceImpl implements BlogService {
 	@Override
 	@Transactional
 	public ServerResponse delete(String blogId) {
+		
+		JwtUser user = UserUtils.getUser();
 		if (StringUtils.isEmpty(blogId)) {
 			return null;
 		}
 		
 		Blog blog = blogRepository.getOne(blogId);
+		
+		if (!StringUtils.equals(user.getId(), blog.getCreateUser())) {
+			return ServerResponse.createByError("没有权限进行该操作");
+		}
+		
 		blog.setStatus(CommonStatus.UNACTIVE.getCode());
 		Blog result = blogRepository.save(blog);
 		commentRepository.deleteByBlogId(blogId);
@@ -217,7 +228,24 @@ public class BlogServiceImpl implements BlogService {
 		}
 		return ServerResponse.createByError("删除失败， 请联系管理员");
 	}
-	
+
+	@Override
+	public ServerResponse findAllByUserId() {
+
+		JwtUser user = UserUtils.getUser();
+		
+		List<Blog> blogs = blogRepository.findAllByCreateUserAndStatusOrderByCreateTimeDesc(user.getId(), CommonStatus.ACTIVE.getCode());
+
+		List<BlogVo> blogVos = new ArrayList<>();
+		BlogVo vo = null;
+		for (Blog blog : blogs) {
+			vo =  new BlogVo();
+			BeanUtils.copyProperties(blog, vo);
+			blogVos.add(vo);
+		}
+		return ServerResponse.createBySuccess("查询成功", blogVos);
+	}
+
 	/**
 	 * 博客正文上传方法 存入文件 返回文件存储路径
 	 * @param content 博客正文

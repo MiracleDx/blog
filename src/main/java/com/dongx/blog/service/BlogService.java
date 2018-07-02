@@ -55,4 +55,10 @@ public interface BlogService {
 	 * @return
 	 */
 	ServerResponse delete(String blogId);
+
+	/**
+	 * 查找该用户下的所有博客
+	 * @return
+	 */
+	ServerResponse findAllByUserId();
 }

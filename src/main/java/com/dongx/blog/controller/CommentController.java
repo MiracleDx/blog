@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
  * Created in: 2018-06-28 20:34
  * Modified by:
  */
+@CrossOrigin
 @RestController
 @RequestMapping("/comment")
 public class CommentController {

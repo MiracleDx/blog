@@ -5,9 +5,14 @@ import com.dongx.blog.entity.Total;
 import com.dongx.blog.entity.TotalCount;
 import com.dongx.blog.mapper.TotalCountMapper;
 import com.dongx.blog.resposity.TotalRepository;
+import com.dongx.blog.security.JwtUser;
 import com.dongx.blog.service.TotalService;
+import com.dongx.blog.sys.ServerResponse;
+import com.dongx.blog.utils.UserUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.Server;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -32,31 +37,46 @@ public class TotalServiceImpl implements TotalService {
 	private TotalCountMapper totalCountMapper;
 	
 	@Override
-	public void addStatus(String userId, String blogId) {
+	@Transactional
+	public ServerResponse addStatus(String blogId) {
+		JwtUser user = UserUtils.getUser();
+		Total temp = totalRepository.findByUserIdAndBlogId(user.getId(), blogId);
+		// 之前有点赞记录
+		if (temp != null) {
+			temp.setStatus(TotalStatusEnum.CONFIRM.getCode());
+			Total result = totalRepository.save(temp);
+			if (result != null) {
+				// 增加点赞总数
+				totalCountMapper.addLikeCount(blogId);
+				return ServerResponse.createBySuccess("点赞成功");
+			}
+			return ServerResponse.createByError("点赞失败， 请联系管理员");
+		}
+		
 		Total total = new Total();
-		total.setUserId(userId);
+		total.setUserId(user.getId());
 		total.setBlogId(blogId);
 		total.setStatus(TotalStatusEnum.CONFIRM.getCode());
-		totalRepository.save(total);
+		Total result = totalRepository.save(total);
+		if (result != null) {
+			// 增加点赞总数
+			totalCountMapper.addLikeCount(blogId);
+			return ServerResponse.createBySuccess("点赞成功");
+		}
+		return ServerResponse.createByError("点赞失败， 请联系管理员");
 	}
 
 	@Override
-	public void cancelStatus(String userId, String blogId) {
-		Total total = new Total();
-		total.setUserId(userId);
-		total.setBlogId(blogId);
-		total.setStatus(TotalStatusEnum.CANCEL.getCode());
-		totalRepository.save(total);
-	}
-
-	@Override
-	public void addLikeCount(String blogId) {
-		totalCountMapper.addLikeCount(blogId);
-	}
-
-	@Override
-	public void decLikeCount(String blogId) {
-		totalCountMapper.decLikeCount(blogId);
+	@Transactional
+	public ServerResponse cancelStatus(String blogId) {
+		JwtUser user = UserUtils.getUser();
+		Integer rowCount = totalRepository.cancel(TotalStatusEnum.CANCEL.getCode(), user.getId(), blogId);
+		if (rowCount > 0) {
+			// 减少点赞总数
+			totalCountMapper.decLikeCount(blogId);
+			return ServerResponse.createBySuccess("取消点赞成功");
+		}
+		return ServerResponse.createByError("取消点赞失败， 请联系管理员");
 	}
 
 	@Override
