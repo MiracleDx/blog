@@ -2,6 +2,7 @@ package com.dongx.blog.service.impl;
 
 import com.dongx.blog.common.CommonStatus;
 import com.dongx.blog.common.RoleName;
+import com.dongx.blog.dto.UserDTO;
 import com.dongx.blog.dto.UserInfoDTO;
 import com.dongx.blog.entity.Role;
 import com.dongx.blog.entity.User;
@@ -68,13 +69,13 @@ public class UserSerivceImpl implements UserService {
 	
 	@Override
 	@Transactional
-	public ServerResponse save(User user, HttpServletRequest request) {
+	public ServerResponse save(UserDTO userDTO, HttpServletRequest request) {
 		
-		if (user == null) {
+		if (userDTO == null) {
 			return ServerResponse.createByError("注册失败， 请联系管理员");
 		}
 		
-		String username = user.getUsername();
+		String username = userDTO.getUsername();
 		
 		// 查询注册用户名是否已经存在
 		User oldUser = userRepository.findUserByUsername(username);
@@ -84,12 +85,13 @@ public class UserSerivceImpl implements UserService {
 		} 
 		
 		// 对密码进行加密处理
-		String password = user.getPassword();
+		String password = userDTO.getPassword();
 		String newPassword = EncoderUtils.PasswordEncoder(password);
 		
 		// 获取主键
 		String userId = KeyGeneratorUtils.getInstance().generatorKey();
 		
+		User user = new User();
 		// 存入用户
 		user.setId(userId);
 		user.setPassword(newPassword);
@@ -126,21 +128,25 @@ public class UserSerivceImpl implements UserService {
 
 	@Override
 	@Transactional
-	public ServerResponse update(User user, UserInfoDTO userInfoDTO) {
+	public ServerResponse update(UserInfoDTO userInfoDTO) {
 		
-		if (user == null) {
+		if (userInfoDTO == null) {
 			return null;
 		}
 		
-		UserInfo userInfo = new UserInfo();
-		BeanUtils.copyProperties(userInfoDTO, userInfo);
-		userInfo.setUserId(user.getId());
+		JwtUser user = UserUtils.getUser();
+		
+		UserInfo userInfo = userInfoRepository.findUserInfoByUserId(user.getId());
+		userInfo.setNickname(userInfoDTO.getNickname());
+		userInfo.setMobile(userInfoDTO.getMobile());
+		userInfo.setAvatar(userInfoDTO.getOriginPath());
+		userInfo.setUpdateTime(Date.from(Instant.now()));
 		
 		UserInfo result = userInfoRepository.save(userInfo);
 				
 		if (result != null) {
 			log.info("更新用户信息成功:{}", userInfo.toString());
-			ServerResponse.createBySuccess(result);
+			return ServerResponse.createBySuccess("更新用户信息成功", result);
 		}
 		
 		log.info("更新用户信息失败:{}", user.getUsername());
@@ -211,16 +217,33 @@ public class UserSerivceImpl implements UserService {
 	}
 	
 	
-	public void imageUpload(MultipartFile imageFile, String userid) throws Exception {
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
+	@Override
+	public ServerResponse uploadAvatar(MultipartFile file) {
+		JwtUser user = UserUtils.getUser();
 		// 将图片压缩后转为输入流
-		Thumbnails.of("images/a380_1280x1024.jpg")
-				// 按比例压缩0.5倍
-				.scale(0.5) 
-				.toOutputStream(out);
-		InputStream imageInputStream = new ByteArrayInputStream(out.toByteArray());
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		try {
+			Thumbnails.of(file.getInputStream())
+					// 按比例压缩0.5倍
+					.scale(0.5).outputFormat("jpg").toOutputStream(os);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
-		out.close();
-		imageInputStream.close();
+		try {
+			InputStream imageInputStream = new ByteArrayInputStream(os.toByteArray());
+			String filePath = "/avatar/" + user.getId();
+			String fileName = user.getId() + String.valueOf(System.currentTimeMillis()) + ".jpg";
+			
+			FtpUtils ftpUtils = new FtpUtils();
+			boolean result = ftpUtils.uploadFile(filePath, fileName, imageInputStream);
+			if (result) {
+				String originPath = filePath + '/' + fileName;
+				return ServerResponse.createBySuccess("头像上传成功", originPath);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ServerResponse.createByError("头像上传失败"); 
 	}
 }

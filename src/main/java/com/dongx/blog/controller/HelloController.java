@@ -1,29 +1,21 @@
 package com.dongx.blog.controller;
 
+import com.dongx.blog.dto.UserDTO;
 import com.dongx.blog.entity.User;
 import com.dongx.blog.resposity.UserRepository;
 import com.dongx.blog.security.JwtUser;
 import com.dongx.blog.service.BlogService;
 import com.dongx.blog.service.UserService;
 import com.dongx.blog.sys.ServerResponse;
-import com.dongx.blog.vo.Msg;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.swing.plaf.multi.MultiFileChooserUI;
-import java.io.InputStream;
 import java.util.Objects;
 
 
@@ -41,12 +33,6 @@ import java.util.Objects;
 @RequestMapping
 public class HelloController {
 	
-	@Resource
-	private UserDetailsService userDetailsService;
-	
-	@Resource
-	private UserRepository userRepository;
-
 	@Resource
 	private UserService userService;
 	
@@ -69,8 +55,8 @@ public class HelloController {
 	}
 
 	@PostMapping("/register")
-	public ServerResponse register(@RequestBody User user, HttpServletRequest request) {
-		return userService.save(user, request);
+	public ServerResponse register(@RequestBody UserDTO userDTO, HttpServletRequest request) {
+		return userService.save(userDTO, request);
 	}
 
 	@GetMapping("/findAllBlog")

@@ -18,24 +18,11 @@ import java.util.List;
 @Data
 public class UserInfoDTO {
 
-	private Integer id;
-
-	private String userId;
-
 	private String nickname;
-
+	
 	private String mobile;
-
-	private String avatar;
-
-	private Date registerTime;
-
-	private String registerIp;
-
-	private Date updateTime;
-
-	private Date loginTime;
-
-	private String loginIp;
+	
+	private String originPath;
+	
 	
 }

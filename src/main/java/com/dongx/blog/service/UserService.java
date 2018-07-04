@@ -1,8 +1,10 @@
 package com.dongx.blog.service;
 
+import com.dongx.blog.dto.UserDTO;
 import com.dongx.blog.dto.UserInfoDTO;
 import com.dongx.blog.entity.User;
 import com.dongx.blog.sys.ServerResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,14 +23,14 @@ public interface UserService {
 	 * @param user
 	 * @return
 	 */
-	ServerResponse save(User user, HttpServletRequest request);
+	ServerResponse save(UserDTO user, HttpServletRequest request);
 
 	/**
 	 * 更新用户
-	 * @param user
+	 * @param userInfoDTO
 	 * @return
 	 */
-	ServerResponse update(User user, UserInfoDTO userInfoDTO);
+	ServerResponse update(UserInfoDTO userInfoDTO);
 
 	/**
 	 * 删除用户（假删除）
@@ -51,4 +53,11 @@ public interface UserService {
 	 * @return
 	 */
 	ServerResponse getUserInfo();
+
+	/**
+	 * 上传头像信息
+	 * @param file
+	 * @return
+	 */
+	ServerResponse uploadAvatar(MultipartFile file);
 }

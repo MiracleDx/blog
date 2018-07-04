@@ -1,5 +1,7 @@
 package com.dongx.blog.controller;
 
+import com.dongx.blog.dto.UserInfoDTO;
+import com.dongx.blog.entity.UserInfo;
 import com.dongx.blog.service.UserService;
 import com.dongx.blog.sys.ServerResponse;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +32,11 @@ public class UserController {
 
 	@PostMapping("/avatarUpload")
 	public ServerResponse avatarUpload(MultipartFile file) {
-		return ServerResponse.createByError(file.toString());
+		return userService.uploadAvatar(file);
+	}
+	
+	@PutMapping("/update")
+	public ServerResponse udpate(@RequestBody UserInfoDTO userInfoDTO) {
+		return userService.update(userInfoDTO);
 	}
 }
