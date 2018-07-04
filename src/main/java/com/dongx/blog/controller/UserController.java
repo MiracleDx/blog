@@ -2,10 +2,8 @@ package com.dongx.blog.controller;
 
 import com.dongx.blog.service.UserService;
 import com.dongx.blog.sys.ServerResponse;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 
@@ -28,5 +26,10 @@ public class UserController {
 	@GetMapping("/getUserInfo")
 	public ServerResponse getUserInfo() {
 		return userService.getUserInfo();
+	}
+
+	@PostMapping("/avatarUpload")
+	public ServerResponse avatarUpload(MultipartFile file) {
+		return ServerResponse.createByError(file.toString());
 	}
 }

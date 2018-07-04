@@ -73,7 +73,11 @@ public class TotalServiceImpl implements TotalService {
 		Integer rowCount = totalRepository.cancel(TotalStatusEnum.CANCEL.getCode(), user.getId(), blogId);
 		if (rowCount > 0) {
 			// 减少点赞总数
-			totalCountMapper.decLikeCount(blogId);
+			TotalCount totalCount = totalCountMapper.findLikeAndReplyCount(blogId);
+			// 点赞数不能小于0
+			if (totalCount.getLikeNumber() > 0) {
+				totalCountMapper.decLikeCount(blogId);
+			}
 			return ServerResponse.createBySuccess("取消点赞成功");
 		}
 		return ServerResponse.createByError("取消点赞失败， 请联系管理员");

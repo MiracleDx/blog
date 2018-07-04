@@ -113,7 +113,7 @@
     update
       blog_total_count
     set
-      reply_number = reply_number - 1
+      reply_number = reply_number + 1
     where
       blog_id = #{blogId, jdbcType=VARCHAR}
   </update>
@@ -122,8 +122,15 @@
     select 
       <include refid="Base_Column_List"></include>
     from 
-      blog_total_count 
+      blog_total_count
     where
       blog_id = #{blogId, jdbcType=VARCHAR}
+  </select>
+
+  <select id="findAllOfLikeAndReplyCount" parameterType="string" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List"></include>
+    from
+      blog_total_count
   </select>
 </mapper>

@@ -6,6 +6,7 @@ import com.dongx.blog.entity.Comment;
 import com.dongx.blog.entity.User;
 import com.dongx.blog.entity.UserInfo;
 import com.dongx.blog.mapper.CommentMapper;
+import com.dongx.blog.mapper.TotalCountMapper;
 import com.dongx.blog.resposity.CommentRepository;
 import com.dongx.blog.resposity.UserInfoRepository;
 import com.dongx.blog.resposity.UserRepository;
@@ -47,13 +48,10 @@ public class CommentServiceImpl implements CommentService {
 	private CommentRepository commentRepository;
 	
 	@Resource
-	private UserRepository userRepository;
-	
-	@Resource
-	private UserInfoRepository userInfoRepository;
-	
-	@Resource
 	private CommentMapper commentMapper;
+	
+	@Resource
+	private TotalCountMapper totalCountMapper;
 	
 	@Override
 	public ServerResponse save(CommentDTO commentDTO, HttpServletRequest request) {
@@ -92,6 +90,7 @@ public class CommentServiceImpl implements CommentService {
 		Comment result = commentRepository.save(comment);
 		
 		if (result != null) {
+			totalCountMapper.addReplyCount(commentDTO.getBlogId());
 			log.info("评论保存成功: {}", comment.getContent());
 			return ServerResponse.createBySuccess("评论成功", comment);
 		}

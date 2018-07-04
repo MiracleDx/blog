@@ -40,4 +40,8 @@ public class BlogVo {
 	private Integer status;
 	
 	private Integer isLike;
+	
+	private Integer likeNumber;
+	
+	private Integer replyNumber;
 }

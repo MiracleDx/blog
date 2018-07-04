@@ -97,6 +97,7 @@ public class BlogServiceImpl implements BlogService {
 	public ServerResponse findAll() {
 		
 		List<Blog> blogs = blogRepository.findAllByStatusOrderByCreateTimeDesc(CommonStatus.ACTIVE.getCode());
+		List<TotalCount> totalCounts = totalCountMapper.findAllOfLikeAndReplyCount();
 		
 		List<BlogVo> blogVos = new ArrayList<>();
 		BlogVo vo = null;
@@ -104,6 +105,12 @@ public class BlogServiceImpl implements BlogService {
 			vo =  new BlogVo();
 			BeanUtils.copyProperties(blog, vo);
 			blogVos.add(vo);
+			for (TotalCount totalCount : totalCounts) {
+				if (StringUtils.equals(vo.getId(), totalCount.getBlogId())) {
+					vo.setLikeNumber(totalCount.getLikeNumber());
+					vo.setReplyNumber(totalCount.getReplyNumber());
+				}
+			}
 		}
 		return ServerResponse.createBySuccess("查询成功", blogVos);
 	}
@@ -235,13 +242,20 @@ public class BlogServiceImpl implements BlogService {
 		JwtUser user = UserUtils.getUser();
 		
 		List<Blog> blogs = blogRepository.findAllByCreateUserAndStatusOrderByCreateTimeDesc(user.getId(), CommonStatus.ACTIVE.getCode());
-
+		List<TotalCount> totalCounts = totalCountMapper.findAllOfLikeAndReplyCount();
+		
 		List<BlogVo> blogVos = new ArrayList<>();
 		BlogVo vo = null;
 		for (Blog blog : blogs) {
 			vo =  new BlogVo();
 			BeanUtils.copyProperties(blog, vo);
 			blogVos.add(vo);
+			for (TotalCount totalCount : totalCounts) {
+				if (StringUtils.equals(vo.getId(), totalCount.getBlogId())) {
+					vo.setLikeNumber(totalCount.getLikeNumber());
+					vo.setReplyNumber(totalCount.getReplyNumber());
+				}
+			}
 		}
 		return ServerResponse.createBySuccess("查询成功", blogVos);
 	}

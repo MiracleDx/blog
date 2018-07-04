@@ -20,7 +20,6 @@ server:
   session: 60
   tomcat:
     #tomcat的uri编码
-    uri-encoding: utf-8  
-    
+    uri-encoding: utf-8
     
   

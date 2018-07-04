@@ -3,6 +3,8 @@ package com.dongx.blog.mapper;
 import com.dongx.blog.entity.TotalCount;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 public interface TotalCountMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -23,4 +25,6 @@ public interface TotalCountMapper {
     Integer addReplyCount(@Param("blogId") String blogId);
 
     TotalCount findLikeAndReplyCount(@Param("blogId") String blogId);
+    
+    List<TotalCount> findAllOfLikeAndReplyCount();
 }

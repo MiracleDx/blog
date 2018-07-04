@@ -16,6 +16,7 @@ import com.dongx.blog.sys.ServerResponse;
 import com.dongx.blog.utils.*;
 import com.dongx.blog.vo.UserVo;
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +26,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.*;
 import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
@@ -205,5 +208,19 @@ public class UserSerivceImpl implements UserService {
 		}
 		
 		return ServerResponse.createBySuccess(userVo);
+	}
+	
+	
+	public void imageUpload(MultipartFile imageFile, String userid) throws Exception {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		// 将图片压缩后转为输入流
+		Thumbnails.of("images/a380_1280x1024.jpg")
+				// 按比例压缩0.5倍
+				.scale(0.5) 
+				.toOutputStream(out);
+		InputStream imageInputStream = new ByteArrayInputStream(out.toByteArray());
+		
+		out.close();
+		imageInputStream.close();
 	}
 }
