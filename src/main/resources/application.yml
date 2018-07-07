@@ -119,6 +119,9 @@ jwt:
       register: "auth/register"
       
 #FTP ftpuser dongx
+ftp:
+  url: http://172.16.200.68
+  defaultAvatar: /static/images/avatars/user2.jpg
 
   
     

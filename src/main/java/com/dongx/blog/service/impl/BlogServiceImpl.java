@@ -18,6 +18,7 @@ import com.dongx.blog.vo.UserVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,6 +57,12 @@ public class BlogServiceImpl implements BlogService {
 	@Resource
 	private TotalRepository totalRepository;
 
+	@Value("${ftp.defaultAvatar}")
+	private String defaultAvatar;
+
+	@Value("${ftp.url}")
+	private String ftpUrl;
+
 	@Override
 	public ServerResponse findOne(String blogId) {
 		
@@ -69,9 +76,10 @@ public class BlogServiceImpl implements BlogService {
 			BeanUtils.copyProperties(userInfo, userVo);
 			userVo.setId(user.getId());
 			userVo.setUsername(user.getUsername());
-			String defaultAvatar = "/static/images/avatars/user2.jpg";
 			if (StringUtils.isEmpty(userVo.getAvatar())) {
 				userVo.setAvatar(defaultAvatar);
+			} else {
+				userVo.setAvatar(ftpUrl + userVo.getAvatar());
 			}
 		}
 		

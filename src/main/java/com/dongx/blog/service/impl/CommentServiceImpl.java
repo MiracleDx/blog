@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.Server;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,6 +31,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -52,6 +56,12 @@ public class CommentServiceImpl implements CommentService {
 	
 	@Resource
 	private TotalCountMapper totalCountMapper;
+	
+	@Value("${ftp.defaultAvatar}")
+	private String defaultAvatar;
+	
+	@Value("${ftp.url}")
+	private String ftpUrl;
 	
 	@Override
 	public ServerResponse save(CommentDTO commentDTO, HttpServletRequest request) {
@@ -105,21 +115,22 @@ public class CommentServiceImpl implements CommentService {
 			return null;	
 		}
 		
-		String defaultAvatar = "/static/images/avatars/user2.jpg";
 		Map<String, Object> map = new HashMap<>();
 		map.put("blogId", blogId);
 		map.put("status", CommonStatus.ACTIVE.getCode());
-		List<CommentVo> vos = commentMapper.findAllByBlogIdAndStatusOrderByFloorAsc(map);
+		List<CommentVo> vos = commentMapper.findAllByBlogIdOrUserIdAndStatusOrder(map);
 		vos.forEach(e -> {
 			if (StringUtils.isEmpty(e.getAvatar())) {
 				e.setAvatar(defaultAvatar);
+			} else {
+				e.setAvatar(ftpUrl + e.getAvatar());
 			}
 		});
 		
-		List<CommentVo> newVos = this.findchildren(vos);
+		vos = this.findchildren(vos);
 		
 		log.info("查询博客下所有评论成功: {}", blogId);
-		return ServerResponse.createBySuccess(newVos);
+		return ServerResponse.createBySuccess(vos);
 	}
 
 	private List<CommentVo> findchildren(List<CommentVo> vos) {
@@ -167,6 +178,30 @@ public class CommentServiceImpl implements CommentService {
 		log.info("评论删除失败: {}", comment.getId());
 		return ServerResponse.createByError("评论删除失败");
 	}
+
+	@Override
+	public ServerResponse findAllCommentByUserId() {
+		JwtUser user = UserUtils.getUser();
+		
+		Map<String, Object> map = new HashMap<>();
+		map.put("userId", user.getId());
+		map.put("status", CommonStatus.ACTIVE.getCode());
+		List<CommentVo> commentVos = commentMapper.findAllByBlogIdOrUserIdAndStatusOrder(map);
+		// 按创建时间逆序
+		//commentVos.sort(Comparator.comparing(CommentVo::getCreateTime).reversed());
+		return ServerResponse.createBySuccess("查询成功", commentVos);
+	}
+
+	/**
+	 * 通过字段属性去重
+	 * @param keyExtrator
+	 * @param <T>
+	 * @return
+	 */
+	public static <T> Predicate<T> distinctBy(Function<? super T, Object> keyExtrator) {
+		Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+		return t -> seen.putIfAbsent(keyExtrator.apply(t), Boolean.TRUE) == null;
+	} 
 	
 }
 

@@ -4,6 +4,7 @@ import com.dongx.blog.common.CommonStatus;
 import com.dongx.blog.common.RoleName;
 import com.dongx.blog.dto.UserDTO;
 import com.dongx.blog.dto.UserInfoDTO;
+import com.dongx.blog.dto.UserPasswordDTO;
 import com.dongx.blog.entity.Role;
 import com.dongx.blog.entity.User;
 import com.dongx.blog.entity.UserInfo;
@@ -21,6 +22,7 @@ import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -66,6 +68,12 @@ public class UserSerivceImpl implements UserService {
 
 	@Autowired
 	private JwtTokenUtils jwtTokenUtils;
+
+	@Value("${ftp.defaultAvatar}")
+	private String defaultAvatar;
+
+	@Value("${ftp.url}")
+	private String ftpUrl;
 	
 	@Override
 	@Transactional
@@ -137,11 +145,16 @@ public class UserSerivceImpl implements UserService {
 		JwtUser user = UserUtils.getUser();
 		
 		UserInfo userInfo = userInfoRepository.findUserInfoByUserId(user.getId());
-		userInfo.setNickname(userInfoDTO.getNickname());
-		userInfo.setMobile(userInfoDTO.getMobile());
-		userInfo.setAvatar(userInfoDTO.getOriginPath());
+		if (StringUtils.isNotEmpty(userInfoDTO.getNickname())) {
+			userInfo.setNickname(userInfoDTO.getNickname());
+		}
+		if (StringUtils.isNotEmpty(userInfoDTO.getMobile())) {
+			userInfo.setMobile(userInfoDTO.getMobile());
+		}
+		if (StringUtils.isNotEmpty(userInfoDTO.getOriginPath())) {
+			userInfo.setAvatar(userInfoDTO.getOriginPath());
+		}
 		userInfo.setUpdateTime(Date.from(Instant.now()));
-		
 		UserInfo result = userInfoRepository.save(userInfo);
 				
 		if (result != null) {
@@ -181,6 +194,9 @@ public class UserSerivceImpl implements UserService {
 		}
 		
 		JwtUser user = (JwtUser) userDetailsService.loadUserByUsername(username);
+		if (!EncoderUtils.matches(password, user.getPassword())) {
+			return ServerResponse.createByError("密码不正确， 想一想再登录吧");
+		}
 		String token = jwtTokenUtils.createToken(user);
 		log.info(token);
 
@@ -203,16 +219,15 @@ public class UserSerivceImpl implements UserService {
 		JwtUser user = UserUtils.getUser();
 		
 		UserInfo userInfo = userInfoRepository.findUserInfoByUserId(user.getId());
-		String defaultAvatar = "/static/images/avatars/user2.jpg";
-		
 		UserVo userVo = new UserVo();
 		BeanUtils.copyProperties(userInfo, userVo);
 		userVo.setId(user.getId());
 		userVo.setUsername(user.getUsername());
 		if (StringUtils.isEmpty(userVo.getAvatar())) {
 			userVo.setAvatar(defaultAvatar);
+		} else {
+			userVo.setAvatar(ftpUrl + userVo.getAvatar());
 		}
-		
 		return ServerResponse.createBySuccess(userVo);
 	}
 	
@@ -224,8 +239,10 @@ public class UserSerivceImpl implements UserService {
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		try {
 			Thumbnails.of(file.getInputStream())
+					.size(120, 120)
 					// 按比例压缩0.5倍
-					.scale(0.5).outputFormat("jpg").toOutputStream(os);
+					//.scale(0.5)
+					.outputFormat("jpg").toOutputStream(os);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -239,11 +256,34 @@ public class UserSerivceImpl implements UserService {
 			boolean result = ftpUtils.uploadFile(filePath, fileName, imageInputStream);
 			if (result) {
 				String originPath = filePath + '/' + fileName;
-				return ServerResponse.createBySuccess("头像上传成功", originPath);
+				UserInfo userInfo = userInfoRepository.findUserInfoByUserId(user.getId());
+				userInfo.setAvatar(originPath);
+				userInfo.setUpdateTime(Date.from(Instant.now()));
+				userInfoRepository.save(userInfo);
+				return ServerResponse.createBySuccess("头像上传成功", ftpUrl + originPath);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return ServerResponse.createByError("头像上传失败"); 
+	}
+
+	@Override
+	public ServerResponse changePassword(UserPasswordDTO userPasswordDTO) {
+		JwtUser user = UserUtils.getUser();
+		
+		User realUser = userRepository.getOne(user.getId());
+		if (EncoderUtils.matches(userPasswordDTO.getOldPassword(), realUser.getPassword())) {
+			String newPassword = EncoderUtils.PasswordEncoder(userPasswordDTO.getNewPassword());
+			if (EncoderUtils.matches(userPasswordDTO.getNewPassword(), realUser.getPassword())) {
+				return ServerResponse.createByError("将要修改的密码不能与原密码一致");
+			}
+			realUser.setPassword(newPassword);
+			User result = userRepository.save(realUser);
+			if (result != null) {
+				return ServerResponse.createBySuccess("修改密码成功， 请重新登录");
+			}
+		}
+		return ServerResponse.createByError("与原密码不一致");
 	}
 }

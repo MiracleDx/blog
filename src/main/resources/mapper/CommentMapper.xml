@@ -151,9 +151,10 @@
     where id = #{id,jdbcType=VARCHAR}
   </update>
 
-  <select id="findAllByBlogIdAndStatusOrderByFloorAsc" parameterType="java.util.Map" resultMap="findAllByBlogIdAndStatusOrderByFloorAscRes">
+  <select id="findAllByBlogIdOrUserIdAndStatusOrder" parameterType="java.util.Map" resultMap="findAllByBlogIdOrUserIdAndStatusOrderRes">
     select
       c.id, c.blog_id, c.content, c.floor, c.create_user, c.create_time, c.create_ip, c.status, c.pid, c.reply_user_id,
+      (select title from blog_blog where id = c.blog_id) as title,
       (select username from blog_user us where us.id = c.reply_user_id) as reply_username,
       (select nickname from blog_user_info ui where ui.user_id = c.reply_user_id) as reply_nickname, 
       u.username,
@@ -170,16 +171,24 @@
     on
      u.id = i.user_id
     where
-      c.blog_id = #{blogId, jdbcType=VARCHAR}
-    and
       c.status = #{status, jdbcType=INTEGER}
-    order by
-      floor 
-    asc
+    <if test="blogId != null and blogId != '' ">
+      and c.blog_id = #{blogId, jdbcType=VARCHAR}
+      order by
+        floor
+      asc
+    </if>
+    <if test="userId != null and userId != '' ">
+      and c.create_user = #{userId, jdbcType=VARCHAR}
+      order by
+        floor, create_time
+      desc
+    </if>
   </select>
-  <resultMap id="findAllByBlogIdAndStatusOrderByFloorAscRes" type="com.dongx.blog.vo.CommentVo">
+  <resultMap id="findAllByBlogIdOrUserIdAndStatusOrderRes" type="com.dongx.blog.vo.CommentVo">
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="blog_id" jdbcType="VARCHAR" property="blogId" />
+    <result column="title" jdbcType="VARCHAR" property="title"/>
     <result column="content" jdbcType="VARCHAR" property="content" />
     <result column="floor" jdbcType="INTEGER" property="floor" />
     <result column="create_user" jdbcType="VARCHAR" property="createUser" />

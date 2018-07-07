@@ -24,7 +24,7 @@ public interface CommentRepository extends JpaRepository<Comment, String> {
 	 * @param status
 	 * @return
 	 */
-	List<Comment> findAllByBlogIdAndStatusOrderByCreateTimeAsc(String blogId, Integer status);
+	//List<Comment> findAllByBlogIdAndStatusOrderByCreateTimeAsc(String blogId, Integer status);
 
 	/**
 	 * 通过博客id查找创建者在该博客下的所有评论
@@ -33,7 +33,7 @@ public interface CommentRepository extends JpaRepository<Comment, String> {
 	 * @param status
 	 * @return
 	 */
-	List<Comment> findAllByBlogIdAndCreateUserAndStatus(String blogId, String createuserId, Integer status);
+	//List<Comment> findAllByBlogIdAndCreateUserAndStatus(String blogId, String createuserId, Integer status);
 
 	/**
 	 * 查找创建者的所有评论
@@ -41,7 +41,7 @@ public interface CommentRepository extends JpaRepository<Comment, String> {
 	 * @param status
 	 * @return
 	 */
-	List<Comment> findAllByCreateUserAndStatus(String createuserId, Integer status);
+	List<Comment> findAllByCreateUserAndStatusOrderByCreateTimeAsc(String createuserId, Integer status);
 
 	/**
 	 * 该博客下的所有评论假删除

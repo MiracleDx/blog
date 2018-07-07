@@ -1,6 +1,7 @@
 package com.dongx.blog.controller;
 
 import com.dongx.blog.dto.UserInfoDTO;
+import com.dongx.blog.dto.UserPasswordDTO;
 import com.dongx.blog.entity.UserInfo;
 import com.dongx.blog.service.UserService;
 import com.dongx.blog.sys.ServerResponse;
@@ -38,5 +39,10 @@ public class UserController {
 	@PutMapping("/update")
 	public ServerResponse udpate(@RequestBody UserInfoDTO userInfoDTO) {
 		return userService.update(userInfoDTO);
+	}
+	
+	@PutMapping("/changePassword")
+	public ServerResponse changePassword(@RequestBody UserPasswordDTO userPasswordDTO) {
+		return userService.changePassword(userPasswordDTO);
 	}
 }

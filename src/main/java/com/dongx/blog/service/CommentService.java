@@ -29,6 +29,16 @@ public interface CommentService {
 	 */
 	ServerResponse findAllByBlogId(String blogId);
 
-
+	/**
+	 * 通过commentId删除评论（假删除）
+	 * @param commentId
+	 * @return
+	 */
 	ServerResponse deleteByCommentId(String commentId);
+
+	/**
+	 * 查询该用户下所有评论
+	 * @return
+	 */
+	ServerResponse findAllCommentByUserId();
 }

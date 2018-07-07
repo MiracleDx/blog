@@ -1,6 +1,5 @@
 package com.dongx.blog.vo;
 
-import com.dongx.blog.dto.CommentDTO;
 import lombok.Data;
 
 import java.util.Date;
@@ -20,6 +19,8 @@ public class CommentVo {
 	private String id;
 
 	private String blogId;
+	
+	private String title;
 
 	private String content;
 	

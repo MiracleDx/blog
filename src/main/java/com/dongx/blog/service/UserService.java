@@ -2,6 +2,7 @@ package com.dongx.blog.service;
 
 import com.dongx.blog.dto.UserDTO;
 import com.dongx.blog.dto.UserInfoDTO;
+import com.dongx.blog.dto.UserPasswordDTO;
 import com.dongx.blog.entity.User;
 import com.dongx.blog.sys.ServerResponse;
 import org.springframework.web.multipart.MultipartFile;
@@ -60,4 +61,11 @@ public interface UserService {
 	 * @return
 	 */
 	ServerResponse uploadAvatar(MultipartFile file);
+
+	/**
+	 * 修改用户密码
+	 * @param userPasswordDTO
+	 * @return
+	 */
+	ServerResponse changePassword(UserPasswordDTO userPasswordDTO);
 }
