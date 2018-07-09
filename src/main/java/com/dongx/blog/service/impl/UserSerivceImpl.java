@@ -16,6 +16,7 @@ import com.dongx.blog.security.JwtUser;
 import com.dongx.blog.service.UserService;
 import com.dongx.blog.sys.ServerResponse;
 import com.dongx.blog.utils.*;
+import com.dongx.blog.vo.UserNicknameAndMobileVo;
 import com.dongx.blog.vo.UserVo;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
@@ -195,6 +196,7 @@ public class UserSerivceImpl implements UserService {
 		
 		JwtUser user = (JwtUser) userDetailsService.loadUserByUsername(username);
 		if (!EncoderUtils.matches(password, user.getPassword())) {
+			log.info("Password not equals");
 			return ServerResponse.createByError("密码不正确， 想一想再登录吧");
 		}
 		String token = jwtTokenUtils.createToken(user);
@@ -285,5 +287,15 @@ public class UserSerivceImpl implements UserService {
 			}
 		}
 		return ServerResponse.createByError("与原密码不一致");
+	}
+
+	@Override
+	public ServerResponse getNicknameAndMobile() {
+		JwtUser user = UserUtils.getUser();
+		
+		UserInfo userInfo = userInfoRepository.findUserInfoByUserId(user.getId());
+		UserNicknameAndMobileVo userNicknameAndMobileVo = new UserNicknameAndMobileVo();
+		BeanUtils.copyProperties(userInfo, userNicknameAndMobileVo);
+		return ServerResponse.createBySuccess(userNicknameAndMobileVo);
 	}
 }

@@ -237,6 +237,13 @@
 			<artifactId>thumbnailator</artifactId>
 			<version>[0.4, 0.5)</version>
 		</dependency>
+
+		<!--引入elasticsearch-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>

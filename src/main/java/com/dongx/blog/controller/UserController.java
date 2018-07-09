@@ -45,4 +45,9 @@ public class UserController {
 	public ServerResponse changePassword(@RequestBody UserPasswordDTO userPasswordDTO) {
 		return userService.changePassword(userPasswordDTO);
 	}
+	
+	@GetMapping("/getNicknameAndMobile")
+	public ServerResponse getNicknameAndMobile() {
+		return userService.getNicknameAndMobile();
+	}
 }

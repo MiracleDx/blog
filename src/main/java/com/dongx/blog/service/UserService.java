@@ -68,4 +68,10 @@ public interface UserService {
 	 * @return
 	 */
 	ServerResponse changePassword(UserPasswordDTO userPasswordDTO);
+
+	/**
+	 * 获取用户昵称和手机号
+	 * @return
+	 */
+	ServerResponse getNicknameAndMobile();
 }
