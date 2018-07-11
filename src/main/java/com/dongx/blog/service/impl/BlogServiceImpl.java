@@ -6,14 +6,17 @@ import com.dongx.blog.dto.BlogDTO;
 import com.dongx.blog.entity.*;
 import com.dongx.blog.mapper.TotalCountMapper;
 import com.dongx.blog.resposity.*;
+import com.dongx.blog.resposity.es.EsBlogRepository;
 import com.dongx.blog.security.JwtUser;
 import com.dongx.blog.service.BlogService;
+import com.dongx.blog.service.es.EsBlogService;
 import com.dongx.blog.sys.ServerResponse;
 import com.dongx.blog.utils.FtpUtils;
 import com.dongx.blog.utils.IpUtils;
 import com.dongx.blog.utils.KeyGeneratorUtils;
 import com.dongx.blog.utils.UserUtils;
 import com.dongx.blog.vo.BlogVo;
+import com.dongx.blog.vo.EsBlogVo;
 import com.dongx.blog.vo.UserVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -56,6 +59,9 @@ public class BlogServiceImpl implements BlogService {
 	
 	@Resource
 	private TotalRepository totalRepository;
+	
+	@Resource
+	private EsBlogService esBlogService;
 
 	@Value("${ftp.defaultAvatar}")
 	private String defaultAvatar;
@@ -88,7 +94,7 @@ public class BlogServiceImpl implements BlogService {
 			BeanUtils.copyProperties(blog, blogVo);
 			blogVo.setContent(this.readFile(blog.getAddress(), blog.getFilename()));
 			Total total = totalRepository.findByUserIdAndBlogId(user.getId(), blogId);
-			if (total.getStatus() == TotalStatusEnum.CONFIRM.getCode()) {
+			if (total != null && total.getStatus() == TotalStatusEnum.CONFIRM.getCode()) {
 				blogVo.setIsLike(1);
 			} else {
 				blogVo.setIsLike(0);
@@ -167,7 +173,13 @@ public class BlogServiceImpl implements BlogService {
 				BlogVo vo = new BlogVo();
 				BeanUtils.copyProperties(result, vo);
 				vo.setContent(content);
-				log.info("博客更新成功：{}", blog.getTitle());
+				log.info("博客更新成功：{}", blog.getId());
+
+				EsBlogVo esBlogVo = new EsBlogVo();
+				BeanUtils.copyProperties(vo, esBlogVo);
+				EsBlogVo esResult = esBlogService.saveOrUpdate(esBlogVo);
+				log.info("elasticsearch update blogId: {} success", esResult.getId());
+				
 				return ServerResponse.createBySuccess("更新成功", vo);
 			}
 		}
@@ -213,7 +225,15 @@ public class BlogServiceImpl implements BlogService {
 				BlogVo vo = new BlogVo();
 				BeanUtils.copyProperties(result, vo);
 				vo.setContent(content);
-				log.info("博客保存成功：{}", blog.getTitle());
+				log.info("博客保存成功：{}", blog.getId());
+				
+				EsBlogVo esBlogVo = new EsBlogVo();
+				BeanUtils.copyProperties(vo, esBlogVo);
+				esBlogVo.setLikeNumber(0);
+				esBlogVo.setReplyNumber(0);
+				EsBlogVo esResult = esBlogService.saveOrUpdate(esBlogVo);
+				log.info("elasticsearch save blogId: {} success", esResult.getId());
+				
 				return ServerResponse.createBySuccess("保存成功", vo);
 			}
 		} 
@@ -239,6 +259,8 @@ public class BlogServiceImpl implements BlogService {
 		Blog result = blogRepository.save(blog);
 		commentRepository.deleteByBlogId(blogId);
 		if (result != null) {
+			esBlogService.delete(blogId);
+			log.info("elasticsearch delete {} success", blog.getId());
 			return ServerResponse.createBySuccess("删除成功");
 		}
 		return ServerResponse.createByError("删除失败， 请联系管理员");

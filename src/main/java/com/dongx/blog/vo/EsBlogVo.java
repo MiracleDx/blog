@@ -25,10 +25,14 @@ public class EsBlogVo {
 	
 	private String description;
 	
+	private String content;
+	
 	private Date createTime;
 	
 	private Integer likeNumber;
 	
 	private Integer replyNumber;
+	
+	private Integer flag;
 	
 }

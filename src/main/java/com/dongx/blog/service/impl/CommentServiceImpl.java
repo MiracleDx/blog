@@ -12,6 +12,7 @@ import com.dongx.blog.resposity.UserInfoRepository;
 import com.dongx.blog.resposity.UserRepository;
 import com.dongx.blog.security.JwtUser;
 import com.dongx.blog.service.CommentService;
+import com.dongx.blog.service.TotalService;
 import com.dongx.blog.sys.ServerResponse;
 import com.dongx.blog.utils.IpUtils;
 import com.dongx.blog.utils.KeyGeneratorUtils;
@@ -55,7 +56,7 @@ public class CommentServiceImpl implements CommentService {
 	private CommentMapper commentMapper;
 	
 	@Resource
-	private TotalCountMapper totalCountMapper;
+	private TotalService totalService;
 	
 	@Value("${ftp.defaultAvatar}")
 	private String defaultAvatar;
@@ -100,7 +101,7 @@ public class CommentServiceImpl implements CommentService {
 		Comment result = commentRepository.save(comment);
 		
 		if (result != null) {
-			totalCountMapper.addReplyCount(commentDTO.getBlogId());
+			totalService.addReplyCount(commentDTO.getBlogId());
 			log.info("评论保存成功: {}", comment.getContent());
 			return ServerResponse.createBySuccess("评论成功", comment);
 		}
@@ -191,17 +192,5 @@ public class CommentServiceImpl implements CommentService {
 		//commentVos.sort(Comparator.comparing(CommentVo::getCreateTime).reversed());
 		return ServerResponse.createBySuccess("查询成功", commentVos);
 	}
-
-	/**
-	 * 通过字段属性去重
-	 * @param keyExtrator
-	 * @param <T>
-	 * @return
-	 */
-	public static <T> Predicate<T> distinctBy(Function<? super T, Object> keyExtrator) {
-		Map<Object, Boolean> seen = new ConcurrentHashMap<>();
-		return t -> seen.putIfAbsent(keyExtrator.apply(t), Boolean.TRUE) == null;
-	} 
-	
 }
 

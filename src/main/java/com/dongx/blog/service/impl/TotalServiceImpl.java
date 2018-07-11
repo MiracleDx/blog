@@ -7,8 +7,10 @@ import com.dongx.blog.mapper.TotalCountMapper;
 import com.dongx.blog.resposity.TotalRepository;
 import com.dongx.blog.security.JwtUser;
 import com.dongx.blog.service.TotalService;
+import com.dongx.blog.service.es.EsBlogService;
 import com.dongx.blog.sys.ServerResponse;
 import com.dongx.blog.utils.UserUtils;
+import com.dongx.blog.vo.EsBlogVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.Server;
 import org.springframework.stereotype.Service;
@@ -36,6 +38,9 @@ public class TotalServiceImpl implements TotalService {
 	@Resource
 	private TotalCountMapper totalCountMapper;
 	
+	@Resource
+	private EsBlogService esBlogService;
+	
 	@Override
 	@Transactional
 	public ServerResponse addStatus(String blogId) {
@@ -48,6 +53,13 @@ public class TotalServiceImpl implements TotalService {
 			if (result != null) {
 				// 增加点赞总数
 				totalCountMapper.addLikeCount(blogId);
+
+				TotalCount likeAndReplyCount = totalCountMapper.findLikeAndReplyCount(blogId);
+				EsBlogVo esBlogVo = esBlogService.findOne(blogId);
+				esBlogVo.setLikeNumber(likeAndReplyCount.getLikeNumber());
+				esBlogService.saveOrUpdate(esBlogVo);
+				log.info("elasticsearch update {} likeNumber success", esBlogVo.getTitle());
+						
 				return ServerResponse.createBySuccess("点赞成功");
 			}
 			return ServerResponse.createByError("点赞失败， 请联系管理员");
@@ -61,6 +73,12 @@ public class TotalServiceImpl implements TotalService {
 		if (result != null) {
 			// 增加点赞总数
 			totalCountMapper.addLikeCount(blogId);
+
+			TotalCount likeAndReplyCount = totalCountMapper.findLikeAndReplyCount(blogId);
+			EsBlogVo esBlogVo = esBlogService.findOne(blogId);
+			esBlogVo.setLikeNumber(likeAndReplyCount.getLikeNumber());
+			esBlogService.saveOrUpdate(esBlogVo);
+			log.info("elasticsearch update {} likeNumber success", esBlogVo.getTitle());
 			return ServerResponse.createBySuccess("点赞成功");
 		}
 		return ServerResponse.createByError("点赞失败， 请联系管理员");
@@ -78,6 +96,12 @@ public class TotalServiceImpl implements TotalService {
 			if (totalCount.getLikeNumber() > 0) {
 				totalCountMapper.decLikeCount(blogId);
 			}
+
+			TotalCount likeAndReplyCount = totalCountMapper.findLikeAndReplyCount(blogId);
+			EsBlogVo esBlogVo = esBlogService.findOne(blogId);
+			esBlogVo.setLikeNumber(likeAndReplyCount.getLikeNumber());
+			esBlogService.saveOrUpdate(esBlogVo);
+			log.info("elasticsearch update blogId: {} likeNumber success", esBlogVo.getId());
 			return ServerResponse.createBySuccess("取消点赞成功");
 		}
 		return ServerResponse.createByError("取消点赞失败， 请联系管理员");
@@ -86,11 +110,15 @@ public class TotalServiceImpl implements TotalService {
 	@Override
 	public void addReplyCount(String blogId) {
 		totalCountMapper.addReplyCount(blogId);
+		TotalCount likeAndReplyCount = totalCountMapper.findLikeAndReplyCount(blogId);
+		EsBlogVo esBlogVo = esBlogService.findOne(blogId);
+		esBlogVo.setReplyNumber(likeAndReplyCount.getReplyNumber());
+		esBlogService.saveOrUpdate(esBlogVo);
+		log.info("elasticsearch update blogId: {} replyNumber success", esBlogVo.getId());
 	}
 
 	@Override
 	public TotalCount findLikeAndReplyCount(String blogId) {
-		TotalCount totalCount = totalCountMapper.findLikeAndReplyCount(blogId);
- 		return totalCount;
+ 		return totalCountMapper.findLikeAndReplyCount(blogId);
 	}
 }
