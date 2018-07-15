@@ -14,6 +14,7 @@ import javax.annotation.Resource;
  * Created in: 2018-07-10 21:57
  * Modified by:
  */
+@CrossOrigin
 @RestController
 @RequestMapping("/es")
 public class EsBlogController {

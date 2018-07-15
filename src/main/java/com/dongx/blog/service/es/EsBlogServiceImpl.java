@@ -44,7 +44,8 @@ public class EsBlogServiceImpl implements EsBlogService {
 		// 截取点赞前五
 		List<EsBlogVo> vos = esBlogRepository.findEsBlogVosByFlagOrderByLikeNumberDesc(CommonStatus.ACTIVE.getCode());
 		if (vos.size() > 5) {
-			vos.subList(0, 5);
+			List<EsBlogVo> subList = vos.subList(0, 5);
+			return ServerResponse.createBySuccess(subList);
 		}
 		return ServerResponse.createBySuccess(vos);
 	}
@@ -54,7 +55,8 @@ public class EsBlogServiceImpl implements EsBlogService {
 		//截取发表前五
 		List<EsBlogVo> vos = esBlogRepository.findEsBlogVosByFlagOrderByCreateTimeDesc(CommonStatus.ACTIVE.getCode());
 		if (vos.size() > 5) {
-			vos.subList(0, 5);
+			List<EsBlogVo> subList = vos.subList(0, 5);
+			return ServerResponse.createBySuccess(subList);
 		}
 		return ServerResponse.createBySuccess(vos);
 	}

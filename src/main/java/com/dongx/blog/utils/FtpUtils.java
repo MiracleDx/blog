@@ -102,6 +102,9 @@ public class FtpUtils {
 		boolean result = false;
 		ftpClient = new FTPClient();
 		InputStream is;
+		if (StringUtils.isEmpty(content)) {
+			content = "";
+		}
 		try {
 			initFtpClient();
 			is = new ByteArrayInputStream(content.getBytes());

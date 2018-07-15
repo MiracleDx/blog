@@ -2,6 +2,7 @@ package com.dongx.blog.vo;
 
 import lombok.Data;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
 
 import javax.persistence.Id;
 import java.util.Date;
@@ -21,10 +22,13 @@ public class EsBlogVo {
 	@Id
 	private String id;
 	
+	@Field(analyzer = "ik_max_word", searchAnalyzer = "ik_max_word")
 	private String title;
-	
+
+	@Field(analyzer = "ik_max_word", searchAnalyzer = "ik_max_word")
 	private String description;
-	
+
+	@Field(analyzer = "ik_max_word", searchAnalyzer = "ik_max_word")
 	private String content;
 	
 	private Date createTime;

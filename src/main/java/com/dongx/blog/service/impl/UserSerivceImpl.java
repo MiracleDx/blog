@@ -103,6 +103,7 @@ public class UserSerivceImpl implements UserService {
 		User user = new User();
 		// 存入用户
 		user.setId(userId);
+		user.setUsername(username);
 		user.setPassword(newPassword);
 		user.setStatus(CommonStatus.ACTIVE.getCode());
 		User userResult = userRepository.save(user);
