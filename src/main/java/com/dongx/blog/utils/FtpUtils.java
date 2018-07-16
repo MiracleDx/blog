@@ -249,9 +249,10 @@ public class FtpUtils {
 					log.info("changeDirectory failed: {}", tempPath);
 					if (!ftpClient.makeDirectory(newString(tempPath))) {
 						log.info("makeDirectory failed: {}", tempPath);
-						return result;
 					} else {
 						ftpClient.changeWorkingDirectory(newString(tempPath));
+						log.info("makeDirectory success: {}", tempPath);
+						result = true;
 					}
 				}
 			}
