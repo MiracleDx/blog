@@ -58,10 +58,14 @@ public class HelloController {
 	public ServerResponse register(@RequestBody UserDTO userDTO, HttpServletRequest request) {
 		return userService.save(userDTO, request);
 	}
+	
+	@GetMapping("/authlogout")
+	public ServerResponse logout(HttpServletRequest request) {
+		return userService.logout(request);
+	}
 
 	@GetMapping("/findAllBlog")
 	public ServerResponse findAllBlog() {
 		return blogService.findAll();
 	}
-
 }

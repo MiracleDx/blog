@@ -18,7 +18,7 @@ import javax.sql.DataSource;
  * Created in: 2018-05-13 14:47
  * Modified by:
  */
-@ComponentScan
+//@ComponentScan
 @Configuration
 public class DataSourceConfig {
 	

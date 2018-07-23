@@ -21,11 +21,11 @@ import java.util.Arrays;
  * Created in: 2018-05-18 19:10
  * Modified by:
  */
+@Slf4j
 @Aspect
 @Component
-@Slf4j
 public class WebLogAspectConfig {
-
+	
 	ThreadLocal<Long> startTime = new ThreadLocal<>();
 
 	@Pointcut("execution(public * com.dongx.blog.controller..*.*(..))")
@@ -50,9 +50,10 @@ public class WebLogAspectConfig {
 
 	@AfterReturning(returning = "ret", pointcut = "webLog()")
 	public void doAfterReturning(Object ret) throws Throwable {
+		long responseTime = System.currentTimeMillis() - startTime.get();
 		// 处理完请求，返回内容
 		log.info("服务器开始响应");
 		log.info("服务器响应<->RESPONSE : " + ret);
-		log.info("服务器响应<->SPEND TIME : {} 毫秒", (System.currentTimeMillis() - startTime.get()));
+		log.info("服务器响应<->SPEND TIME : {} 毫秒", responseTime);
 	}
 }

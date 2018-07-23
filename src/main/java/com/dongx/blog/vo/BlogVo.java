@@ -1,7 +1,9 @@
 package com.dongx.blog.vo;
 
 import lombok.Data;
+import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -12,8 +14,8 @@ import java.util.Date;
  * Created in: 2018-06-03 17:01
  * Modified by:
  */
-@Data
-public class BlogVo {
+@Data	
+public class BlogVo implements Serializable {
 
 	private String id;
 

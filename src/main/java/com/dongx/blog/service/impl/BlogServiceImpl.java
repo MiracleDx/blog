@@ -11,10 +11,7 @@ import com.dongx.blog.security.JwtUser;
 import com.dongx.blog.service.BlogService;
 import com.dongx.blog.service.es.EsBlogService;
 import com.dongx.blog.sys.ServerResponse;
-import com.dongx.blog.utils.FtpUtils;
-import com.dongx.blog.utils.IpUtils;
-import com.dongx.blog.utils.KeyGeneratorUtils;
-import com.dongx.blog.utils.UserUtils;
+import com.dongx.blog.utils.*;
 import com.dongx.blog.vo.BlogVo;
 import com.dongx.blog.vo.EsBlogVo;
 import com.dongx.blog.vo.UserVo;
@@ -22,6 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,16 +61,15 @@ public class BlogServiceImpl implements BlogService {
 	
 	@Resource
 	private EsBlogService esBlogService;
-
+	
 	@Value("${ftp.defaultAvatar}")
 	private String defaultAvatar;
 
 	@Value("${ftp.url}")
 	private String ftpUrl;
-
+	
 	@Override
 	public ServerResponse findOne(String blogId) {
-		
 		Blog blog = blogRepository.getOne(blogId);
 		
 		User user = userRepository.getOne(blog.getCreateUser());
@@ -179,7 +177,6 @@ public class BlogServiceImpl implements BlogService {
 				BeanUtils.copyProperties(vo, esBlogVo);
 				EsBlogVo esResult = esBlogService.saveOrUpdate(esBlogVo);
 				log.info("elasticsearch update blogId: {} success", esResult.getId());
-				
 				return ServerResponse.createBySuccess("更新成功", vo);
 			}
 		}
@@ -233,7 +230,6 @@ public class BlogServiceImpl implements BlogService {
 				esBlogVo.setReplyNumber(0);
 				EsBlogVo esResult = esBlogService.saveOrUpdate(esBlogVo);
 				log.info("elasticsearch save blogId: {} success", esResult.getId());
-				
 				return ServerResponse.createBySuccess("保存成功", vo);
 			}
 		} 
@@ -270,6 +266,10 @@ public class BlogServiceImpl implements BlogService {
 	public ServerResponse findAllByUserId() {
 
 		JwtUser user = UserUtils.getUser();
+		
+		if (!user.getRoles().contains("ADMIN")) {
+			return ServerResponse.createByError("没有访问权限");
+		}
 		
 		List<Blog> blogs = blogRepository.findAllByCreateUserAndStatusOrderByCreateTimeDesc(user.getId(), CommonStatus.ACTIVE.getCode());
 		List<TotalCount> totalCounts = totalCountMapper.findAllOfLikeAndReplyCount();

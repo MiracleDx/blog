@@ -1,6 +1,8 @@
 package com.dongx.blog.security;
 
 import com.dongx.blog.utils.JwtTokenUtils;
+import com.dongx.blog.utils.RedisUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -41,6 +43,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private JwtTokenUtils jwtTokenUtils;
 
 	@Resource
+	private RedisUtils redisUtils;
+
+	@Value("${jwt.header}")
+	private String AUTH_HEADER_NAME;
+	
+	@Value("${jwt.expiration}")
+	private long expiration;
+
+	@Resource
 	public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
 		authenticationManagerBuilder
 				// 设置UserDetailsService
@@ -78,12 +89,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 						"/**/*.js"
 				).permitAll()
 				// 对于获取token的restapi要允许匿名访问
-				.antMatchers("/authlogin", "/register", "/findAllBlog", "/es/**").permitAll()
+				.antMatchers("/authlogin", "/register", "/authlogout", "/findAllBlog", "/es/**").permitAll()
 				// 除上面外的所有请求全部需要鉴权认证
 				.anyRequest().authenticated();
 
 		// 过滤验签
-		http.addFilterBefore(new JwtAuthenticationTokenFilter(jwtTokenUtils),
+		http.addFilterBefore(new JwtAuthenticationTokenFilter(jwtTokenUtils, redisUtils, AUTH_HEADER_NAME, userDetailsService, expiration),
 				UsernamePasswordAuthenticationFilter.class);
 		// 禁用缓存
 		http.headers().cacheControl();

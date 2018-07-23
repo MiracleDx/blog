@@ -111,7 +111,7 @@ jwt:
   header: Authorization
   secret: fullinlovewithyangxl
   expiration: 604800
-  tokenHead: "yangxl "
+  bearer: "yangxl "
   route:
     authentication:
       path: auth

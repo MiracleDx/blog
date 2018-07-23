@@ -11,6 +11,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -35,8 +37,8 @@ public class JwtTokenUtils {
 	@Value("${jwt.expiration}")
 	private long VALIDITY_TIME_MS;
 
-	@Value("${jwt.tokenHead}")
-	private String tokenHead;
+	@Value("${jwt.bearer}")
+	private String bearer;
 
 	/**
 	 * 从用户中创建一个jwt Token
@@ -53,7 +55,7 @@ public class JwtTokenUtils {
 			throw new IllegalArgumentException("User doesn't have any privileges");
 		}
 		
-		return Jwts.builder()
+		return bearer + Jwts.builder()
 				.setExpiration(new Date(System.currentTimeMillis() + VALIDITY_TIME_MS))
 				.setSubject(jwtUser.getUsername())
 				.setId(jwtUser.getId())
@@ -86,7 +88,7 @@ public class JwtTokenUtils {
 			return Optional.empty();
 		}
 		// The part after "authHeader "
-		final String token = authHeader.substring(tokenHead.length());
+		final String token = authHeader.substring(bearer.length());
 
 		if (token != null && !token.isEmpty()){
 			final JwtUser user = parseToken(token.trim());
@@ -103,5 +105,23 @@ public class JwtTokenUtils {
 		// final Date expiration = getExpirationDateFromToken(token);
 		return (StringUtils.equals(userFromToken.getId(),jwtUser.getId())
 				&& StringUtils.equals(userFromToken.getUsername(), jwtUser.getUsername()));
+	}
+
+	/**
+	 * 获取剩余过期时间
+	 * @param token
+	 * @return
+	 */
+	public long getExpirationMillisFromToken(String token) {
+		token = token.substring(bearer.length());
+		Claims claims = Jwts.parser()
+				.setSigningKey(SECRET)
+				.parseClaimsJws(token.trim())
+				.getBody();
+		Date expirationDate = claims.getExpiration();
+		Instant now = Instant.now();
+		Instant expirationTime = expirationDate.toInstant();
+		long expirationMillis = Duration.between(now, expirationTime).toMillis();
+		return expirationMillis;
 	}
 }

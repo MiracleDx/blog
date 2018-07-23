@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dongx.blog.mapper.SysLogMapper">
+  <resultMap id="BaseResultMap" type="com.dongx.blog.entity.SysLog">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="operate_user" jdbcType="VARCHAR" property="operateUser" />
+    <result column="operate_time" jdbcType="TIMESTAMP" property="operateTime" />
+    <result column="operate_ip" jdbcType="VARCHAR" property="operateIp" />
+    <result column="request_url" jdbcType="VARCHAR" property="requestUrl" />
+    <result column="request_method" jdbcType="VARCHAR" property="requestMethod" />
+    <result column="request_args" jdbcType="VARCHAR" property="requestArgs" />
+    <result column="response_data" jdbcType="VARCHAR" property="responseData" />
+    <result column="response_time" jdbcType="VARCHAR" property="responseTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, operate_user, operate_time, operate_ip, request_url, request_method, request_args, 
+    response_data, response_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from blog_sys_log
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from blog_sys_log
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.dongx.blog.entity.SysLog">
+    insert into blog_sys_log (id, operate_user, operate_time, 
+      operate_ip, request_url, request_method, 
+      request_args, response_data, response_time
+      )
+    values (#{id,jdbcType=VARCHAR}, #{operateUser,jdbcType=VARCHAR}, #{operateTime,jdbcType=TIMESTAMP}, 
+      #{operateIp,jdbcType=VARCHAR}, #{requestUrl,jdbcType=VARCHAR}, #{requestMethod,jdbcType=VARCHAR}, 
+      #{requestArgs,jdbcType=VARCHAR}, #{responseData,jdbcType=VARCHAR}, #{responseTime,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.dongx.blog.entity.SysLog">
+    insert into blog_sys_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="operateUser != null">
+        operate_user,
+      </if>
+      <if test="operateTime != null">
+        operate_time,
+      </if>
+      <if test="operateIp != null">
+        operate_ip,
+      </if>
+      <if test="requestUrl != null">
+        request_url,
+      </if>
+      <if test="requestMethod != null">
+        request_method,
+      </if>
+      <if test="requestArgs != null">
+        request_args,
+      </if>
+      <if test="responseData != null">
+        response_data,
+      </if>
+      <if test="responseTime != null">
+        response_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="operateUser != null">
+        #{operateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="operateTime != null">
+        #{operateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operateIp != null">
+        #{operateIp,jdbcType=VARCHAR},
+      </if>
+      <if test="requestUrl != null">
+        #{requestUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="requestMethod != null">
+        #{requestMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="requestArgs != null">
+        #{requestArgs,jdbcType=VARCHAR},
+      </if>
+      <if test="responseData != null">
+        #{responseData,jdbcType=VARCHAR},
+      </if>
+      <if test="responseTime != null">
+        #{responseTime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dongx.blog.entity.SysLog">
+    update blog_sys_log
+    <set>
+      <if test="operateUser != null">
+        operate_user = #{operateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="operateTime != null">
+        operate_time = #{operateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operateIp != null">
+        operate_ip = #{operateIp,jdbcType=VARCHAR},
+      </if>
+      <if test="requestUrl != null">
+        request_url = #{requestUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="requestMethod != null">
+        request_method = #{requestMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="requestArgs != null">
+        request_args = #{requestArgs,jdbcType=VARCHAR},
+      </if>
+      <if test="responseData != null">
+        response_data = #{responseData,jdbcType=VARCHAR},
+      </if>
+      <if test="responseTime != null">
+        response_time = #{responseTime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dongx.blog.entity.SysLog">
+    update blog_sys_log
+    set operate_user = #{operateUser,jdbcType=VARCHAR},
+      operate_time = #{operateTime,jdbcType=TIMESTAMP},
+      operate_ip = #{operateIp,jdbcType=VARCHAR},
+      request_url = #{requestUrl,jdbcType=VARCHAR},
+      request_method = #{requestMethod,jdbcType=VARCHAR},
+      request_args = #{requestArgs,jdbcType=VARCHAR},
+      response_data = #{responseData,jdbcType=VARCHAR},
+      response_time = #{responseTime,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,6 +1,7 @@
 package com.dongx.blog.resposity;
 
 import com.dongx.blog.entity.Blog;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
  * Created in: 2018-06-03 17:01
  * Modified by:
  */
+@CacheConfig(cacheNames = "blog")
 public interface BlogRepository extends JpaRepository<Blog, String> {
 
 	/**

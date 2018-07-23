@@ -49,6 +49,12 @@ public interface UserService {
 	ServerResponse login(String username, String password, HttpServletRequest request);
 
 	/**
+	 * 用户注销
+	 * @return
+	 */
+	ServerResponse logout(HttpServletRequest request);
+
+	/**
 	 * 查询用户信息
 	 * @param token
 	 * @return
@@ -67,7 +73,7 @@ public interface UserService {
 	 * @param userPasswordDTO
 	 * @return
 	 */
-	ServerResponse changePassword(UserPasswordDTO userPasswordDTO);
+	ServerResponse changePassword(UserPasswordDTO userPasswordDTO, HttpServletRequest request);
 
 	/**
 	 * 获取用户昵称和手机号

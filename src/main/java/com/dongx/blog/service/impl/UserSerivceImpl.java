@@ -1,7 +1,8 @@
 package com.dongx.blog.service.impl;
 
 import com.dongx.blog.common.CommonStatus;
-import com.dongx.blog.common.RoleName;
+import com.dongx.blog.common.RoleNameConstant;
+import com.dongx.blog.common.TokenConstant;
 import com.dongx.blog.dto.UserDTO;
 import com.dongx.blog.dto.UserInfoDTO;
 import com.dongx.blog.dto.UserPasswordDTO;
@@ -34,7 +35,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
@@ -70,11 +74,20 @@ public class UserSerivceImpl implements UserService {
 	@Autowired
 	private JwtTokenUtils jwtTokenUtils;
 
+	@Value("${jwt.header}")
+	private String AUTH_HEADER_NAME;
+
+	@Value("${jwt.bearer}")
+	private String bearer;
+	
 	@Value("${ftp.defaultAvatar}")
 	private String defaultAvatar;
 
 	@Value("${ftp.url}")
 	private String ftpUrl;
+
+	@Resource
+	private RedisUtils redisUtils;
 	
 	@Override
 	@Transactional
@@ -109,7 +122,7 @@ public class UserSerivceImpl implements UserService {
 		User userResult = userRepository.save(user);
 		
 		// 存入用户角色
-		Role role = roleRepostiory.findByRoleName(RoleName.ROLE_USER);
+		Role role = roleRepostiory.findByRoleName(RoleNameConstant.ROLE_USER);
 		Map<String, Object> map = new HashMap<>();
 		map.put("userId", userId);
 		map.put("roleId", role.getId());
@@ -196,6 +209,7 @@ public class UserSerivceImpl implements UserService {
 		}
 		
 		JwtUser user = (JwtUser) userDetailsService.loadUserByUsername(username);
+
 		if (!EncoderUtils.matches(password, user.getPassword())) {
 			log.info("Password not equals");
 			return ServerResponse.createByError("密码不正确， 想一想再登录吧");
@@ -215,6 +229,19 @@ public class UserSerivceImpl implements UserService {
 		userInfo.setLoginIp(ip);
 		userInfoRepository.save(userInfo);
 		return ServerResponse.createBySuccess("登录成功", token);
+	}
+	
+	@Override
+	public ServerResponse logout(HttpServletRequest request) {
+		String token = request.getHeader(AUTH_HEADER_NAME);
+		if (StringUtils.isEmpty(token)) {
+			return ServerResponse.createBySuccess("清除登录信息成功");
+		}
+		JwtUser user = UserUtils.getUser();
+		redisUtils.set(TokenConstant.LOGOUT_TOKEN + token, user.getId(), jwtTokenUtils.getExpirationMillisFromToken(token));
+		log.info("redis put logout token success, {}", user.getId());
+		SecurityContextHolder.clearContext();
+		return ServerResponse.createBySuccess("退出登录成功");
 	}
 	
 	@Override
@@ -272,7 +299,7 @@ public class UserSerivceImpl implements UserService {
 	}
 
 	@Override
-	public ServerResponse changePassword(UserPasswordDTO userPasswordDTO) {
+	public ServerResponse changePassword(UserPasswordDTO userPasswordDTO, HttpServletRequest request) {
 		JwtUser user = UserUtils.getUser();
 		
 		User realUser = userRepository.getOne(user.getId());
@@ -284,6 +311,9 @@ public class UserSerivceImpl implements UserService {
 			realUser.setPassword(newPassword);
 			User result = userRepository.save(realUser);
 			if (result != null) {
+				String token = request.getHeader(AUTH_HEADER_NAME);
+				redisUtils.set(TokenConstant.UPDATE_TOKEN + token, user.getId(), jwtTokenUtils.getExpirationMillisFromToken(token));
+				log.info("redis put update token success, {}", user.getId());
 				return ServerResponse.createBySuccess("修改密码成功， 请重新登录");
 			}
 		}

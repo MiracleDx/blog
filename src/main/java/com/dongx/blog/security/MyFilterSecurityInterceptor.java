@@ -26,12 +26,6 @@ import java.io.IOException;
 @Slf4j
 @Service
 public class MyFilterSecurityInterceptor extends AbstractSecurityInterceptor implements Filter {
-
-	@Value("${jwt.header}")
-	private String tokenHeader;
-
-	@Value("${jwt.tokenHead}")
-	private String tokenHead;
 	
 	@Resource
 	private FilterInvocationSecurityMetadataSource securityMetadataSource;

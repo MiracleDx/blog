@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * UserController
@@ -37,13 +38,13 @@ public class UserController {
 	}
 	
 	@PutMapping("/update")
-	public ServerResponse udpate(@RequestBody UserInfoDTO userInfoDTO) {
+	public ServerResponse udpate(@RequestBody UserInfoDTO userInfoDTO, HttpServletRequest request) {
 		return userService.update(userInfoDTO);
 	}
 	
 	@PutMapping("/changePassword")
-	public ServerResponse changePassword(@RequestBody UserPasswordDTO userPasswordDTO) {
-		return userService.changePassword(userPasswordDTO);
+	public ServerResponse changePassword(@RequestBody UserPasswordDTO userPasswordDTO, HttpServletRequest request) {
+		return userService.changePassword(userPasswordDTO, request);
 	}
 	
 	@GetMapping("/getNicknameAndMobile")

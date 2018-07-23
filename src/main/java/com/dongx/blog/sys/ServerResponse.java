@@ -2,6 +2,9 @@ package com.dongx.blog.sys;
 
 import com.dongx.blog.common.ResponseCode;
 import lombok.Data;
+import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
+
+import java.io.Serializable;
 
 /**
  * ServerReponse
@@ -12,7 +15,7 @@ import lombok.Data;
  * Modified by:
  */
 @Data
-public class ServerResponse<T> {
+public class ServerResponse<T> implements Serializable {
 	
 	private Integer code;
 	
