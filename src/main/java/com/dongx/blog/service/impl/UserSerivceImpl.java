@@ -239,8 +239,8 @@ public class UserSerivceImpl implements UserService {
 		}
 		JwtUser user = UserUtils.getUser();
 		redisUtils.set(TokenConstant.LOGOUT_TOKEN + token, user.getId(), jwtTokenUtils.getExpirationMillisFromToken(token));
-		log.info("redis put logout token success, {}", user.getId());
-		SecurityContextHolder.clearContext();
+		log.info("redis put logout token success, SecurityContextHolder.clearContext();{}", user.getId());
+
 		return ServerResponse.createBySuccess("退出登录成功");
 	}
 	

@@ -1,5 +1,6 @@
 package com.dongx.blog.utils;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,7 +29,7 @@ public class JwtTokenUtilsTest {
 
 	@Test
 	public void getExpirationDateFromToken() {
-		String token = "yangxl eyJhbGciOiJIUzUxMiJ9.eyJleHAiOjE1MzIxODM2MzQsInN1YiI6ImFkbWluIiwianRpIjoiMTIzMjEzIiwicm9sZXMiOlsiSE9NRSIsIkFETUlOIiwiVVNFUiIsIkJMT0ciLCJUT1RBTCJdfQ.vfKZFfw3scRDIUHz7MTTMJczGrvjZIu8CwAywN5Zus-rtLAwkNnnahRkmDPGNZG7TYW5aHjQefkcvxABdhKANA";
+		String token = "yangxl eyJhbGciOiJIUzUxMiJ9.eyJleHAiOjE1MzI0NDM0NDUsInN1YiI6ImFkbWluIiwianRpIjoiMTIzMjEzIiwicm9sZXMiOlsiSE9NRSIsIkFETUlOIiwiVVNFUiIsIkJMT0ciLCJUT1RBTCJdfQ.8MvkDUX98OOlYF7J6RKEP0S_n1ZhBXFTHspvLbp2EUpeD6VH4ZYqN4aPmYo5b6BL4XugBHO5yas9wU2CllJloQ";
 		long expiration = jwtTokenUtils.getExpirationMillisFromToken(token);
 		System.out.println(expiration);
 	}

@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.nio.file.Path;
@@ -16,6 +17,7 @@ import java.nio.file.Path;
 @MapperScan("com.dongx.blog.mapper")
 @Slf4j
 @EnableCaching
+@EnableScheduling
 public class InitializationApplication {
 
 	public static void main(String[] args) {

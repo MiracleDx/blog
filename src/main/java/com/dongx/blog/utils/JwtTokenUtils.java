@@ -1,5 +1,6 @@
 package com.dongx.blog.utils;
 
+import com.alibaba.fastjson.JSON;
 import com.dongx.blog.security.JwtTokenAuthentication;
 import com.dongx.blog.security.JwtUser;
 import io.jsonwebtoken.Claims;
@@ -11,11 +12,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * JwtTokenUtil
@@ -114,14 +116,12 @@ public class JwtTokenUtils {
 	 */
 	public long getExpirationMillisFromToken(String token) {
 		token = token.substring(bearer.length());
-		Claims claims = Jwts.parser()
-				.setSigningKey(SECRET)
-				.parseClaimsJws(token.trim())
-				.getBody();
-		Date expirationDate = claims.getExpiration();
-		Instant now = Instant.now();
-		Instant expirationTime = expirationDate.toInstant();
-		long expirationMillis = Duration.between(now, expirationTime).toMillis();
+		String payloadToken = token.substring(token.indexOf(".") + 1, token.lastIndexOf("."));
+		String  payload = new Base64Utils().decryptBASE64(payloadToken);
+		Map payloadMap = (Map) JSON.parse(payload);
+		long expTimestamp = Long.parseLong(payloadMap.get("exp").toString());
+		long nowTimestamp = System.currentTimeMillis();
+		long expirationMillis = expTimestamp * 1000 - nowTimestamp;
 		return expirationMillis;
 	}
 }

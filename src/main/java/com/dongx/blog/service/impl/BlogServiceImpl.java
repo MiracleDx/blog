@@ -6,12 +6,14 @@ import com.dongx.blog.dto.BlogDTO;
 import com.dongx.blog.entity.*;
 import com.dongx.blog.mapper.TotalCountMapper;
 import com.dongx.blog.resposity.*;
-import com.dongx.blog.resposity.es.EsBlogRepository;
 import com.dongx.blog.security.JwtUser;
 import com.dongx.blog.service.BlogService;
 import com.dongx.blog.service.es.EsBlogService;
 import com.dongx.blog.sys.ServerResponse;
-import com.dongx.blog.utils.*;
+import com.dongx.blog.utils.FtpUtils;
+import com.dongx.blog.utils.IpUtils;
+import com.dongx.blog.utils.KeyGeneratorUtils;
+import com.dongx.blog.utils.UserUtils;
 import com.dongx.blog.vo.BlogVo;
 import com.dongx.blog.vo.EsBlogVo;
 import com.dongx.blog.vo.UserVo;
@@ -19,8 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -296,7 +296,7 @@ public class BlogServiceImpl implements BlogService {
 	 * @param userid 用户id
 	 * @return
 	 */
-	private Map<String, String> uploadFile(String content, String userid) {
+	public Map<String, String> uploadFile(String content, String userid) {
 		FtpUtils ftpUtils = new FtpUtils();
 		String filePath = "/blog/" + userid;
 		String fileName = userid + String.valueOf(System.currentTimeMillis());
@@ -316,7 +316,7 @@ public class BlogServiceImpl implements BlogService {
 	 * @param fileName 存储的文件名
 	 * @return
 	 */
-	private String readFile(String address, String fileName) {
+	public String readFile(String address, String fileName) {
 		FtpUtils ftpUtils = new FtpUtils();
 		String content = ftpUtils.readContent(address , fileName);
 		return content;
@@ -328,7 +328,7 @@ public class BlogServiceImpl implements BlogService {
 	 * @param fileName 存储文件名
 	 * @return
 	 */
-	private boolean deleteFile(String address, String fileName) {
+	public boolean deleteFile(String address, String fileName) {
 		FtpUtils ftpUtils = new FtpUtils();
 		return ftpUtils.deleteFile(address, fileName);
 		 
