@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.time.Instant;
 import java.util.*;
 
@@ -91,7 +92,7 @@ public class BlogServiceImpl implements BlogService {
 			BlogVo blogVo = new BlogVo();
 			BeanUtils.copyProperties(blog, blogVo);
 			blogVo.setContent(this.readFile(blog.getAddress(), blog.getFilename()));
-			Total total = totalRepository.findByUserIdAndBlogId(user.getId(), blogId);
+			Total total = totalRepository.findByUserIdAndBlogId(UserUtils.getUser().getId(), blogId);
 			if (total != null && total.getStatus() == TotalStatusEnum.CONFIRM.getCode()) {
 				blogVo.setIsLike(1);
 			} else {
@@ -175,6 +176,9 @@ public class BlogServiceImpl implements BlogService {
 
 				EsBlogVo esBlogVo = new EsBlogVo();
 				BeanUtils.copyProperties(vo, esBlogVo);
+				TotalCount likeAndReplyCount = totalCountMapper.findLikeAndReplyCount(blog.getId());
+				esBlogVo.setReplyNumber(likeAndReplyCount.getReplyNumber());
+				esBlogVo.setLikeNumber(likeAndReplyCount.getLikeNumber());
 				EsBlogVo esResult = esBlogService.saveOrUpdate(esBlogVo);
 				log.info("elasticsearch update blogId: {} success", esResult.getId());
 				return ServerResponse.createBySuccess("更新成功", vo);
@@ -298,7 +302,7 @@ public class BlogServiceImpl implements BlogService {
 	 */
 	public Map<String, String> uploadFile(String content, String userid) {
 		FtpUtils ftpUtils = new FtpUtils();
-		String filePath = "/blog/" + userid;
+		String filePath =  File.separator + "blog" + File.separator + userid;
 		String fileName = userid + String.valueOf(System.currentTimeMillis());
 		boolean result = ftpUtils.uploadContent(filePath, fileName, content);
 		if (result) {

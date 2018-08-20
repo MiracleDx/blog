@@ -23,7 +23,7 @@ import java.time.Instant;
 public class FtpUtils {
 
 	/** ftp服务器地址 */
-	private String hostname = "172.16.200.68";
+	private String hostname = "59.110.163.229";
 	
 	/** 默认端口 */
 	private Integer port = 21;
@@ -32,10 +32,10 @@ public class FtpUtils {
 	private String loginName = "ftpuser";
 	
 	/** 登录密码 */
-	private String password = "dongx";
+	private String password = "dongxiang.";
 	
 	/** FTP服务器基础目录 */
-	private String basePath = "/pub";
+	private String basePath = "pub";
 
 
 	FTPClient ftpClient;
@@ -50,6 +50,7 @@ public class FtpUtils {
 			ftpClient.connect(hostname, port);
 			// 登录FTP服务器
 			ftpClient.login(loginName, password);
+			ftpClient.setControlEncoding("UTF-8");
 			int replyCode = ftpClient.getReplyCode();
 			if (!FTPReply.isPositiveCompletion(replyCode)) {
 				ftpClient.disconnect();
@@ -139,6 +140,7 @@ public class FtpUtils {
 		try {
 			initFtpClient();
 			changeWorkDirectory(filePath);
+			// 开启被动传输模式
 			ftpClient.enterLocalPassiveMode();
 			InputStream is = ftpClient.retrieveFileStream(newString(fileName));
 			BufferedReader reader = new BufferedReader(new InputStreamReader(is, encoding));
@@ -182,6 +184,7 @@ public class FtpUtils {
 			if (!result) {
 				return result;
 			}
+			// 开启被动传输模式
 			ftpClient.enterLocalPassiveMode();
 			result = ftpClient.deleteFile(fileName);
 			log.info("delete file success: {}", fileName);
@@ -211,7 +214,8 @@ public class FtpUtils {
 			FTPFile[] fs = ftpClient.listFiles();
 			for (FTPFile file : fs) {
 				if (StringUtils.equals(file.getName(), fileName)) {
-					File localFile = new File(localPath + "/" + file.getName());
+					File localFile = new File(localPath + File.separator + file.getName());
+					// 开启被动传输模式
 					ftpClient.enterLocalPassiveMode();
 					OutputStream os = new FileOutputStream(localFile);
 					ftpClient.retrieveFile(file.getName(), os);
@@ -238,13 +242,13 @@ public class FtpUtils {
 		if (!ftpClient.changeWorkingDirectory(newString(basePath + filePath))) {
 			log.info("changeDirectory failed: {}", basePath + filePath);
 			// 如果目录不存在创建目录
-			String[] dirs = filePath.split("/");
+			String[] dirs = filePath.split(File.separator);
 			String tempPath = basePath;
 			for (String dir : dirs) {
 				if (StringUtils.isEmpty(dir)) {
 					continue;
 				}
-				tempPath += "/" + dir;
+				tempPath += File.separator + dir;
 				if (!ftpClient.changeWorkingDirectory(newString(tempPath))) {
 					log.info("changeDirectory failed: {}", tempPath);
 					if (!ftpClient.makeDirectory(newString(tempPath))) {
@@ -274,6 +278,7 @@ public class FtpUtils {
 		boolean result = false;
 		// 设置上传文件类型为二进制类型
 		ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+		// 开启被动传输模式
 		ftpClient.enterLocalPassiveMode();
 		if (!ftpClient.storeFile(newString(fileName), is)) {
 			log.info("upload file failed: {}", fileName);
@@ -293,7 +298,7 @@ public class FtpUtils {
 	 * @throws Exception
 	 */
 	private String newString(String str) throws Exception {
-		return new String(str.getBytes("GBK"),"iso-8859-1");
+		return new String(str.getBytes("UTF-8"),"iso-8859-1");
 	}
 
 	/**

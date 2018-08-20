@@ -72,7 +72,7 @@ public class ScheduledEsTasks {
 			if (blogTemp != null) {
 				EsBlogVo esBlogVo = new EsBlogVo();
 				BeanUtils.copyProperties(blog, esBlogVo);
-				esBlogVo.setContent(impl.readFile(blog.getAddress(), blog.getFilename()));
+				//esBlogVo.setContent(impl.readFile(blog.getAddress(), blog.getFilename()));
 				esBlogVo.setReplyNumber(likeAndReplyCount.getReplyNumber());
 				esBlogVo.setLikeNumber(likeAndReplyCount.getLikeNumber());
 				esBlogVos.add(esBlogVo);

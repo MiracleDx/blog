@@ -120,8 +120,8 @@ jwt:
       
 #FTP ftpuser dongx
 ftp:
-  url: http://172.16.200.68
-  defaultAvatar: /static/images/avatars/user2.jpg
+  url: http://59.110.163.229:8860
+  defaultAvatar: /static/images/avatars/default.jpg
 
   
     

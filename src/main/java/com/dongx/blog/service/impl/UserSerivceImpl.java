@@ -35,10 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
@@ -279,13 +276,13 @@ public class UserSerivceImpl implements UserService {
 		
 		try {
 			InputStream imageInputStream = new ByteArrayInputStream(os.toByteArray());
-			String filePath = "/avatar/" + user.getId();
+			String filePath =  File.separator + "avatar" + File.separator + user.getId();
 			String fileName = user.getId() + String.valueOf(System.currentTimeMillis()) + ".jpg";
 			
 			FtpUtils ftpUtils = new FtpUtils();
 			boolean result = ftpUtils.uploadFile(filePath, fileName, imageInputStream);
 			if (result) {
-				String originPath = filePath + '/' + fileName;
+				String originPath = filePath + File.separator + fileName;
 				UserInfo userInfo = userInfoRepository.findUserInfoByUserId(user.getId());
 				userInfo.setAvatar(originPath);
 				userInfo.setUpdateTime(Date.from(Instant.now()));

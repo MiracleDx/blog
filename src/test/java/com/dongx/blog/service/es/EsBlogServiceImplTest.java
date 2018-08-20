@@ -38,6 +38,9 @@ public class EsBlogServiceImplTest {
 	@Resource
 	private BlogService blogService;
 	
+	@Resource
+	private EsBlogRepository esBlogRepository;
+	
 	@Test
 	public void findAll() {
 		esBlogService.findAll().getData();
@@ -65,5 +68,10 @@ public class EsBlogServiceImplTest {
 	@Test
 	public void findTopFive() {
 		esBlogService.findTopFive();
+	}
+	
+	@Test
+	public void deleteAll() {
+		esBlogRepository.deleteAll();
 	}
 }
