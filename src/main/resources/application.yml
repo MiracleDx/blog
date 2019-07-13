@@ -109,7 +109,7 @@ pagehelper:
 # JWT
 jwt:
   header: Authorization
-  secret: fullinlovewithyangxl
+  secret: fullinlovewith
   expiration: 604800
   bearer: "yangxl "
   route:
